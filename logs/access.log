@@ -79,3 +79,7 @@
 {"time":"2026-06-07T17:46:27.4606334+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/api/v1/documents/CERT-2026-0001","status":200,"ip":"::1","duration":8378300}
 {"time":"2026-06-07T17:46:35.6785555+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/api/v1/documents/hash/2b335316c4b3fdf05d19c221fd6e98dc53fc359890480a71da50f39b94e0d076","status":200,"ip":"::1","duration":5252000}
 {"time":"2026-06-07T17:46:41.0034579+02:00","level":"INFO","msg":"HTTP Request","method":"PUT","path":"/api/v1/documents/CERT-2026-0001","status":200,"ip":"::1","duration":40774900}
+{"time":"2026-06-07T18:35:12.8003741+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/api/v1/documents","status":200,"ip":"::1","duration":21065600}
+{"time":"2026-06-07T18:35:19.2555941+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/api/v1/documents/CERT-2026-0001","status":200,"ip":"::1","duration":8197600}
+{"time":"2026-06-07T18:35:24.6018752+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/api/v1/documents/hash/2b335316c4b3fdf05d19c221fd6e98dc53fc359890480a71da50f39b94e0d076","status":200,"ip":"::1","duration":6745800}
+{"time":"2026-06-07T18:35:39.4126469+02:00","level":"INFO","msg":"HTTP Request","method":"PUT","path":"/api/v1/documents/CERT-2026-0001","status":200,"ip":"::1","duration":43485600}

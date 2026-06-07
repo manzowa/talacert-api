@@ -19,11 +19,10 @@ L'objectif est de permettre à toute personne ou organisation de vérifier rapid
 
 ## 🧱 Stack technique
 
-* PHP 8+
-* Symfony
-* API Platform
-* Doctrine ORM
-* MySQL / PostgreSQL
+* GO
+* GIN
+* GORM ORM
+* MySQL /MariaDB 
 
 ---
 
@@ -51,7 +50,15 @@ composer install
 Modifier le fichier `.env` :
 
 ```env
-DATABASE_URL="mysql://user:password@127.0.0.1:3306/talacert"
+APP_ENV=development
+GIN_MODE=debug
+PORT=8080
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_NAME=talacert
+DB_USER=root
+DB_PASSWORD=
 ```
 
 ---
@@ -59,7 +66,6 @@ DATABASE_URL="mysql://user:password@127.0.0.1:3306/talacert"
 ### 4. Créer la base de données
 
 ```bash
-php bin/console doctrine:database:create
 ```
 
 ---
@@ -67,7 +73,6 @@ php bin/console doctrine:database:create
 ### 5. Lancer les migrations
 
 ```bash
-php bin/console doctrine:migrations:migrate
 ```
 
 ---
@@ -75,13 +80,13 @@ php bin/console doctrine:migrations:migrate
 ### 6. Démarrer le serveur
 
 ```bash
-symfony server:start
+
 ```
 
 Ou sous Windows :
 
 ```bash
-php -S 127.0.0.1:8000 -t public
+start run.bat or run 
 ```
 
 ---
@@ -91,7 +96,7 @@ php -S 127.0.0.1:8000 -t public
 * Swagger UI :
 
 ```
-http://127.0.0.1:8000/api
+http://127.0.0.1:8000/api/v1
 ```
 
 ---
@@ -142,17 +147,41 @@ POST /api/verify
 ## 🗄 Structure du projet
 
 ```
-src/
- ├── Controller/
- │    └── VerificationController.php
+internal/
+ ├── Config/
+ │    └── config.go
+ │    └── database.go
  │
- ├── Entity/
- │    └── Document.php
+ ├── dto/
+ │    └── document_request.go 
+ │    └── document_response.go
+ |    └── document_update.go
  │
- ├── Repository/
- │    └── DocumentRepository.php
+ ├── mapper/
+ │    └── document_mapper.go
  │
- └── Service/
+ ├── models/
+ │    └── document.go
+ │    └── document_sequence.go
+ │
+ ├── repositories/
+ │    └── document_repository.go
+ │    └── document_sequence_repository.go
+ │
+ ├── routes/
+ │    └── routes.go
+ │
+ ├── services/
+ │    └── document_service.go
+ │
+ ├── utils/
+ │    └── hash/
+ │    │   └── hash.go
+ │    └── generate_document_id.go
+ │
+ ├── handlers/
+ │    └── document_handler.go
+ │
 ```
 
 ---
@@ -178,8 +207,7 @@ Chaque document peut contenir :
 ## 📌 Statuts des documents
 
 * `valid`
-* `revoked`
-* `expired`
+* `invalid`
 
 ---
 

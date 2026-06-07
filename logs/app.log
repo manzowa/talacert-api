@@ -46,3 +46,7 @@
 {"time":"2026-06-07T17:30:04.6047715+02:00","level":"INFO","msg":"Database connected"}
 {"time":"2026-06-07T17:30:04.6638757+02:00","level":"INFO","msg":"Database migrated"}
 {"time":"2026-06-07T17:30:04.6657459+02:00","level":"INFO","msg":"Server started","port":"8080"}
+{"time":"2026-06-07T18:34:55.5332221+02:00","level":"INFO","msg":"Starting application"}
+{"time":"2026-06-07T18:34:55.6265158+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-06-07T18:34:55.6712036+02:00","level":"INFO","msg":"Database migrated"}
+{"time":"2026-06-07T18:34:55.6717095+02:00","level":"INFO","msg":"Server started","port":"8080"}

@@ -16,7 +16,7 @@ type DocumentSequenceRepository struct {
 }
 
 // NewDocumentSequenceRepository creates a new instance of DocumentSequenceRepository with the provided gorm.DB connection.
-func NewDocumentSequence(db *gorm.DB) *DocumentSequenceRepository {
+func NewDocumentSequenceRepository(db *gorm.DB) *DocumentSequenceRepository {
 	return &DocumentSequenceRepository{DB: db}
 }
 

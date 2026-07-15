@@ -10,117 +10,202 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"talacert-api/internal/dto"
-	"talacert-api/internal/mapper"
 	"talacert-api/internal/services"
+	"talacert-api/internal/utils"
 )
 
 type DocumentHandler struct {
 	Service *services.DocumentService
 }
 
-func New(service *services.DocumentService) *DocumentHandler {
+func NewDocument(service *services.DocumentService) *DocumentHandler {
 	return &DocumentHandler{
 		Service: service,
 	}
 }
 
-func (d *DocumentHandler) GetDocumentsHandler(c *gin.Context) {
-	documents, err := d.Service.GetDocuments()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+func (h *DocumentHandler) Create(
+	cxt *gin.Context,
+) {
+	var req dto.CreateDocumentRequest
+
+	if err := cxt.ShouldBindJSON(&req); err != nil {
+		utils.BadRequest(
+			cxt, "Invalid request payload",
+			errors.New(http.StatusText(http.StatusBadRequest)),
+		)
 		return
 	}
-	c.JSON(http.StatusOK, mapper.ToResponseDocuments(documents))
+
+	err := h.Service.Create(cxt, &req)
+
+	if err != nil {
+		utils.InternalServerError(
+			cxt, "Failed to create document",
+			errors.New(http.StatusText(http.StatusInternalServerError)),
+		)
+		return
+	}
+	utils.Created(
+		cxt, "Document created successfully",
+		nil,
+	)
 }
 
-func (d *DocumentHandler) PostDocumentHandler(c *gin.Context) {
-	var docRequest dto.DocumentRequest
+func (h *DocumentHandler) GetAll(
+	cxt *gin.Context,
+) {
+	documents, err := h.Service.GetAll(cxt)
+	if err != nil {
+		utils.InternalServerError(
+			cxt, "Failed to retrieve documents",
+			errors.New(http.StatusText(http.StatusInternalServerError)),
+		)
 
-	if err := c.ShouldBindJSON(&docRequest); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	document := mapper.ToModelDocument(&docRequest)
-
-	if err := d.Service.CreateDocument(&document); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusCreated, mapper.ToResponseDocument(&document))
+	utils.Ok(
+		cxt, "Documents retrieved successfully",
+		documents,
+	)
 }
 
-func (d *DocumentHandler) GetDocumentHandler(c *gin.Context) {
-	id := c.Param("id")
+func (h *DocumentHandler) GetByDocumentID(
+	cxt *gin.Context,
+) {
+	documentID := cxt.Param("document_id")
 
-	if id == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid document ID"})
+	if documentID == "" {
+		utils.BadRequest(
+			cxt, "Invalid document ID",
+			errors.New(http.StatusText(http.StatusBadRequest)),
+		)
+
 		return
 	}
-	document, err := d.Service.GetByDocumentID(id)
+	document, err := h.Service.GetByDocumentID(cxt, documentID)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		utils.NotFound(cxt, "Document not found")
+
 		return
 	}
-	c.JSON(http.StatusOK, mapper.ToResponseDocument(document))
+
+	var response = dto.DocumentResponse{
+		DocumentID: document.DocumentID,
+		OwnerName:  document.OwnerName,
+		Type:       document.Type,
+		Issuer:     document.Issuer,
+		Hash:       document.Hash,
+		Status:     document.Status,
+		CreatedAt:  document.CreatedAt,
+	}
+
+	utils.Ok(cxt, "Document retrieved successfully", response)
+
 }
 
-func (d *DocumentHandler) PutDocumentHandler(c *gin.Context) {
-	id := c.Param("id")
+func (h *DocumentHandler) Update(
+	cxt *gin.Context,
+) {
+	documentID := cxt.Param("document_id")
 
-	if id == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid document ID"})
+	if documentID == "" {
+		utils.BadRequest(
+			cxt, "Invalid document ID",
+			errors.New(http.StatusText(http.StatusBadRequest)),
+		)
+
 		return
 	}
-	var docRequest dto.DocumentRequest
+	var req dto.UpdateDocumentRequest
 
-	if err := c.ShouldBindJSON(&docRequest); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := cxt.ShouldBindJSON(&req); err != nil {
+		utils.BadRequest(
+			cxt, "Invalid request payload",
+			errors.New(http.StatusText(http.StatusBadRequest)),
+		)
+
 		return
 	}
-	doc := mapper.ToModelDocument(&docRequest)
 
-	updatedDoc, err := d.Service.UpdateByDocumentID(id, &doc)
+	err := h.Service.Update(cxt, documentID, req)
+
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		utils.InternalServerError(
+			cxt, "Failed to update document",
+			errors.New(http.StatusText(http.StatusInternalServerError)),
+		)
+
 		return
 	}
-	c.JSON(http.StatusOK, mapper.ToResponseDocument(updatedDoc))
+
+	utils.Ok(cxt, "Document updated successfully", nil)
+
 }
 
-func (h *DocumentHandler) DeleteDocumentHandler(c *gin.Context) {
-	id := c.Param("id")
+func (h *DocumentHandler) Delete(
+	cxt *gin.Context,
+) {
+	documentID := cxt.Param("document_id")
 
-	if id == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid document ID"})
+	if documentID == "" {
+		utils.BadRequest(
+			cxt, "Invalid document ID",
+			errors.New(http.StatusText(http.StatusBadRequest)),
+		)
+
 		return
 	}
 
-	err := h.Service.DeleteByDocumentID(id)
-	if err != nil {
+	err := h.Service.Delete(cxt, documentID)
 
-		// 🔥 cas "not found" (optionnel mais recommandé)
+	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.JSON(http.StatusNotFound, gin.H{"error": "document not found"})
+			utils.NotFound(cxt, "Document not found")
 			return
 		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message":     "document deleted successfully",
-		"document_id": id,
-	})
+	utils.Ok(cxt, "Document deleted successfully", nil)
 }
 
-func (d *DocumentHandler) GetDocumentByHashHandler(c *gin.Context) {
-	hash := c.Param("hash")
-	document, err := d.Service.GetByDocumentHash(hash)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+func (h *DocumentHandler) GetByHash(
+	cxt *gin.Context,
+) {
+	hash := cxt.Param("hash")
+
+	if hash == "" {
+		utils.BadRequest(
+			cxt, "Invalid hash",
+			errors.New(http.StatusText(http.StatusBadRequest)),
+		)
+
 		return
 	}
-	c.JSON(http.StatusOK, mapper.ToResponseDocument(document))
+
+	document, err := h.Service.GetByHash(cxt, hash)
+
+	if err != nil {
+		utils.InternalServerError(
+			cxt, "Failed to retrieve document",
+			errors.New(http.StatusText(http.StatusInternalServerError)),
+		)
+
+		return
+	}
+
+	var response = dto.DocumentResponse{
+		DocumentID: document.DocumentID,
+		OwnerName:  document.OwnerName,
+		Type:       document.Type,
+		Issuer:     document.Issuer,
+		Hash:       document.Hash,
+		Status:     document.Status,
+		CreatedAt:  document.CreatedAt,
+	}
+
+	utils.Ok(
+		cxt, "Document retrieved successfully",
+		response,
+	)
 }

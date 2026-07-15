@@ -1,0 +1,5 @@
+{"time":"2026-07-15T01:15:13.9803681+02:00","level":"ERROR","msg":"failed to connect database","error":"Error 1049 (42000): Base 'talacert' inconnue"}
+{"time":"2026-07-15T01:15:13.9859473+02:00","level":"ERROR","msg":"Database connection failed","error":"Error 1049 (42000): Base 'talacert' inconnue"}
+{"time":"2026-07-15T01:17:04.1305807+02:00","level":"ERROR","msg":"Database migration failed","error":"Error 1071 (42000): La clé est trop longue. Longueur maximale: 1000"}
+{"time":"2026-07-15T01:27:46.1430469+02:00","level":"ERROR","msg":"Database migration failed","error":"Error 1071 (42000): La clé est trop longue. Longueur maximale: 1000"}
+{"time":"2026-07-15T02:12:08.6965996+02:00","level":"ERROR","msg":"Database migration failed","error":"Error 1071 (42000): La clé est trop longue. Longueur maximale: 1000"}

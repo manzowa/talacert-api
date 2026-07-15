@@ -13,4 +13,4 @@ echo   ╚═══════════════════════�
 echo.   
 :: go clean -cache
 :: go clean -modcache                    
-go run cmd\api\main.go
+go run cmd\main.go

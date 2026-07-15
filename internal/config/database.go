@@ -11,7 +11,19 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDatabase(cfg *Config) (*gorm.DB, error) {
+func ConnectDatabase(
+	cfg *Config,
+) (*gorm.DB, error) {
+
+	if err := CreateDatabaseIfNotExists(
+		cfg.DBHost,
+		cfg.DBPort,
+		cfg.DBUser,
+		cfg.DBPassword,
+		cfg.DBName,
+	); err != nil {
+		return nil, err
+	}
 
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
@@ -41,4 +53,34 @@ func ConnectDatabase(cfg *Config) (*gorm.DB, error) {
 	sqlDB.SetConnMaxLifetime(5 * time.Minute)
 
 	return db, nil
+}
+
+func CreateDatabaseIfNotExists(
+	host,
+	port,
+	user,
+	password,
+	dbName string,
+) error {
+
+	// Connexion au serveur MySQL sans sélectionner de base
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local",
+		user,
+		password,
+		host,
+		port,
+	)
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return err
+	}
+
+	query := fmt.Sprintf(
+		"CREATE DATABASE IF NOT EXISTS `%s` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci",
+		dbName,
+	)
+
+	return db.Exec(query).Error
 }

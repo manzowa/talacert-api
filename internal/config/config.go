@@ -1,45 +1,47 @@
 package config
 
-import (
-	"os"
-	"talacert-api/internal/logger"
-
-	"github.com/joho/godotenv"
-)
+import "time"
 
 type Config struct {
+	// Application Configuration
 	AppEnv  string
 	GinMode string
 	Port    string
 
+	// Database Configuration
 	DBHost     string
 	DBPort     string
 	DBUser     string
 	DBPassword string
 	DBName     string
+
+	// JWT Configuration
+	JWTAccessSecret      string
+	JWTAccessExpiration  time.Duration
+	JWTRefreshSecret     string
+	JWTRefreshExpiration time.Duration
+
+	// ADMIN Configuration
+	AdminDefaultUsername string
+	AdminDefaultEmail    string
+	AdminDefaultPassword string
 }
 
 var AppConfig *Config
 
-func InitConfig() {
-	err := godotenv.Load()
+// Init initializes the application configuration.
+func Init() error {
+
+	cfg, err := LoadEnv()
 	if err != nil {
-		logger.ErrorLogger.Error("Error loading .env file", "error", err)
+		return err
 	}
 
-	AppConfig = &Config{
-		AppEnv:  os.Getenv("APP_ENV"),
-		GinMode: os.Getenv("GIN_MODE"),
-		Port:    os.Getenv("PORT"),
-
-		DBHost:     os.Getenv("DB_HOST"),
-		DBPort:     os.Getenv("DB_PORT"),
-		DBUser:     os.Getenv("DB_USER"),
-		DBPassword: os.Getenv("DB_PASSWORD"),
-		DBName:     os.Getenv("DB_NAME"),
-	}
+	AppConfig = cfg
+	return nil
 }
 
-func GetConfig() *Config {
+// Get returns the loaded application configuration.
+func Get() *Config {
 	return AppConfig
 }

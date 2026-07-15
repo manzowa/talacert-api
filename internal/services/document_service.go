@@ -1,85 +1,198 @@
 package services
 
 import (
+	"context"
+	"errors"
 	"fmt"
+	"time"
+
+	"talacert-api/internal/constants"
+	"talacert-api/internal/dto"
 	"talacert-api/internal/models"
 	"talacert-api/internal/repositories"
 	"talacert-api/internal/utils"
-	"talacert-api/internal/utils/hash"
-	"time"
+)
+
+var (
+	ErrDocumentNotFound = errors.New("user not found")
 )
 
 type DocumentService struct {
-	DocumentRepository         *repositories.DocumentRepository
-	DocumentSequenceRepository *repositories.DocumentSequenceRepository
-	Hash                       *hash.Hash
+	DocumentRepository         repositories.DocumentRepositoryInterface
+	DocumentSequenceRepository repositories.DocumentSequenceRepositoryInterface
+	Hash                       *utils.Hash
 }
 
-func New(repository *repositories.DocumentRepository, sequenceRepository *repositories.DocumentSequenceRepository) *DocumentService {
+func NewDocument(
+	repository repositories.DocumentRepositoryInterface,
+	sequenceRepository repositories.DocumentSequenceRepositoryInterface,
+) *DocumentService {
 	return &DocumentService{
 		DocumentRepository:         repository,
 		DocumentSequenceRepository: sequenceRepository,
-		Hash:                       &hash.Hash{},
+		Hash:                       &utils.Hash{},
 	}
 }
+func (s *DocumentService) GetAll(
+	ctx context.Context,
+) ([]dto.DocumentResponse, error) {
+	documents, err := s.DocumentRepository.FindAll(ctx)
 
-func (s *DocumentService) GetDocuments() ([]models.Document, error) {
-	return s.DocumentRepository.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	response := make([]dto.DocumentResponse, 0, len(documents))
+
+	for _, document := range documents {
+		response = append(response, s.toDocumentResponse(&document))
+	}
+	return response, nil
 }
 
-func (s *DocumentService) CreateDocument(document *models.Document) error {
+func (s *DocumentService) Create(
+	ctx context.Context,
+	req *dto.CreateDocumentRequest,
+) error {
 	year := time.Now().Year()
 
 	// 1. sequence
-	lastSeq, err := s.DocumentSequenceRepository.GetLast(string(document.Type), year)
+	lastSeq, err := s.DocumentSequenceRepository.GetLast(string(req.Type), year)
 	if err != nil {
-		//return fmt.Errorf("failed to get last sequence: %w", err)
 		return err
 	}
 	seq := lastSeq + 1
-	document.DocumentID = utils.GenerateDocumentID(
-		string(document.Type),
+	var documentID = utils.GenerateDocumentID(
+		string(req.Type),
 		year,
 		seq,
 	)
 
 	content := fmt.Sprintf(
 		"%s|%s|%s|%s",
-		document.DocumentID,
-		document.OwnerName,
-		document.Type,
-		document.Issuer,
+		documentID,
+		req.OwnerName,
+		req.Type,
+		req.Issuer,
 	)
-	document.Hash = s.Hash.GenerateHash(content)
+	var documentHash = s.Hash.GenerateHash(content)
 
 	// 4. save sequence
-	if err := s.DocumentSequenceRepository.Save(string(document.Type), year, seq); err != nil {
+	if err := s.DocumentSequenceRepository.Save(string(req.Type), year, seq); err != nil {
 		return err
 	}
 
-	return s.DocumentRepository.Create(document)
-}
-
-func (s *DocumentService) GetByDocumentID(documentID string) (*models.Document, error) {
-	return s.DocumentRepository.FindByDocumentId(documentID)
-}
-
-func (s *DocumentService) GetByDocumentHash(hash string) (*models.Document, error) {
-	return s.DocumentRepository.FindByHash(hash)
-}
-
-func (s *DocumentService) UpdateByDocumentID(documentID string, document *models.Document) (*models.Document, error) {
-
-	data := map[string]any{
-		"owner_name": document.OwnerName,
-		"type":       document.Type,
-		"issuer":     document.Issuer,
-		"status":     document.Status,
+	document := &models.Document{
+		DocumentID: documentID,
+		OwnerName:  req.OwnerName,
+		Type:       req.Type,
+		Issuer:     req.Issuer,
+		Hash:       documentHash,
 	}
 
-	return s.DocumentRepository.Update(documentID, data)
+	return s.DocumentRepository.Create(ctx, document)
 }
 
-func (s *DocumentService) DeleteByDocumentID(documentID string) error {
-	return s.DocumentRepository.Delete(documentID)
+func (s *DocumentService) Update(
+	ctx context.Context,
+	documentID string,
+	req dto.UpdateDocumentRequest,
+) error {
+
+	document, err := s.DocumentRepository.FindById(ctx, documentID)
+
+	if err != nil {
+		return err
+	}
+	if document == nil {
+		return ErrDocumentNotFound
+	}
+
+	if req.OwnerName != "" {
+		document.OwnerName = req.OwnerName
+	}
+
+	if req.Type != "" {
+		document.Type = req.Type
+	}
+
+	if req.Issuer != "" {
+		document.Issuer = req.Issuer
+	}
+
+	if req.Status != "" {
+		document.Status = constants.DocumentStatus(req.Status)
+	}
+
+	return s.DocumentRepository.Update(ctx, document)
+}
+
+func (s *DocumentService) Delete(
+	ctx context.Context,
+	documentID string,
+) error {
+	document, err := s.DocumentRepository.FindById(ctx, documentID)
+
+	if err != nil {
+		return err
+	}
+
+	if document == nil {
+		return ErrDocumentNotFound
+	}
+
+	return s.DocumentRepository.Delete(ctx, documentID)
+}
+
+func (s *DocumentService) GetByDocumentID(
+	ctx context.Context,
+	documentID string,
+) (*dto.DocumentResponse, error) {
+
+	document, err := s.DocumentRepository.FindById(ctx, documentID)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if document == nil {
+		return nil, ErrDocumentNotFound
+	}
+
+	response := s.toDocumentResponse(document)
+
+	return &response, nil
+}
+
+func (s *DocumentService) GetByHash(
+	ctx context.Context,
+	hash string,
+) (*dto.DocumentResponse, error) {
+	document, err := s.DocumentRepository.FindByHash(ctx, hash)
+	if err != nil {
+		return nil, err
+	}
+
+	if document == nil {
+		return nil, ErrDocumentNotFound
+	}
+
+	response := s.toDocumentResponse(document)
+
+	return &response, nil
+}
+
+func (s *DocumentService) toDocumentResponse(
+	document *models.Document,
+) dto.DocumentResponse {
+
+	return dto.DocumentResponse{
+		DocumentID: document.DocumentID,
+		OwnerName:  document.OwnerName,
+		Type:       document.Type,
+		Issuer:     document.Issuer,
+		Hash:       document.Hash,
+		Status:     string(document.Status),
+		CreatedAt:  document.CreatedAt,
+	}
 }

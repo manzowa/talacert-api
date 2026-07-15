@@ -1,7 +1,7 @@
 package models
 
 import (
-	"time"
+	"talacert-api/internal/constants"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -13,17 +13,16 @@ const (
 )
 
 type Document struct {
-	ID           uint       `gorm:"primaryKey" json:"id"`
-	DocumentID   string     `gorm:"size:255;not null;uniqueIndex" json:"document_id"`
-	OwnerName    string     `gorm:"size:255;not null" json:"owner_name"`
-	Type         string     `gorm:"size:255;not null" json:"type"`
-	Issuer       string     `gorm:"size:255;not null" json:"issuer"`
-	Hash         string     `gorm:"size:255;not null" json:"hash"`
-	BlockchainTx string     `gorm:"size:255;not null" json:"blockchain_tx"`
-	QrCode       string     `gorm:"size:255;not null" json:"qr_code"`
-	Status       string     `gorm:"type:enum('valid','invalid');default:'valid';index" json:"status"`
-	CreatedAt    time.Time  `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt    *time.Time `gorm:"autoUpdateTime" json:"updated_at,omitempty"`
+	gorm.Model
+
+	DocumentID   string                   `gorm:"type:varchar(191);not null;uniqueIndex" json:"document_id"`
+	OwnerName    string                   `gorm:"type:varchar(191);not null" json:"owner_name"`
+	Type         string                   `gorm:"type:varchar(100);not null" json:"type"`
+	Issuer       string                   `gorm:"type:varchar(191);not null" json:"issuer"`
+	Hash         string                   `gorm:"type:char(64);not null;uniqueIndex" json:"hash"`
+	BlockchainTx string                   `gorm:"type:text;not null" json:"blockchain_tx"`
+	QrCode       string                   `gorm:"type:text;not null" json:"qr_code"`
+	Status       constants.DocumentStatus `gorm:"type:varchar(20);not null;default:'valid'" json:"status"`
 }
 
 func NewDocument(ownerName, docType, issuer, hash string) *Document {
@@ -42,4 +41,8 @@ func (d *Document) BeforeCreate(tx *gorm.DB) (err error) {
 		d.DocumentID = uuid.New().String()
 	}
 	return nil
+}
+
+func (Document) TableName() string {
+	return "documents"
 }

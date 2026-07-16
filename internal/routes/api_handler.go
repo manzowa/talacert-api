@@ -18,7 +18,7 @@ type APIHandler struct {
 func (h *APIHandler) Register(router *gin.Engine) {
 
 	// Route Static
-	router.Static("/docs", "./docs")
+	//router.Static("/docs", "./docs")
 
 	api := router.Group("/api")
 	apiSwagger := router.Group("/swagger")

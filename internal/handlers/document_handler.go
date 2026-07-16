@@ -209,3 +209,49 @@ func (h *DocumentHandler) GetByHash(
 		response,
 	)
 }
+
+func (h *DocumentHandler) Check(
+	cxt *gin.Context,
+) {
+	var req dto.VerificationRequest
+
+	if err := cxt.ShouldBindJSON(&req); err != nil {
+		utils.BadRequest(
+			cxt, "Invalid request payload",
+			errors.New(http.StatusText(http.StatusBadRequest)),
+		)
+		return
+	}
+
+	if req.DocumentID == "" {
+		utils.BadRequest(
+			cxt, "Invalid document ID",
+			errors.New(http.StatusText(http.StatusBadRequest)),
+		)
+
+		return
+	}
+	document, err := h.Service.GetByDocumentID(cxt, req.DocumentID)
+
+	if err != nil {
+		utils.NotFound(cxt, "Document not found")
+
+		return
+	}
+
+	response := dto.VerificationResponse{
+		Status: document.Status,
+		Data: dto.VerificationData{
+			Owner:  document.OwnerName,
+			Type:   document.Type,
+			Issuer: document.Issuer,
+		},
+	}
+	message := "Document Valid"
+	if response.Status != "valid" {
+		message = "Document Invalid"
+	}
+
+	utils.Ok(cxt, message, response)
+
+}

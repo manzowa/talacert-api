@@ -68,4 +68,14 @@ func (h *APIHandler) registerDocumentRoutes(
 		),
 		h.DocumentHandler.GetByHash,
 	)
+
+	documents.GET(
+		"/verify",
+		auth.RequireRole(
+			constants.RoleUser.String(),
+			constants.RoleManager.String(),
+			constants.RoleAdmin.String(),
+		),
+		h.DocumentHandler.Check,
+	)
 }

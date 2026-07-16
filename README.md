@@ -1,6 +1,6 @@
 # 📄 TalaCert API
 
-TalaCert est une API de vérification de documents officiels (certificats, diplômes, attestations) basée sur Symfony et API Platform.
+TalaCert est une API de vérification de documents officiels (certificats, diplômes, attestations) basée sur GIN et GORM.
 
 L'objectif est de permettre à toute personne ou organisation de vérifier rapidement l'authenticité d’un document via un identifiant unique ou un QR code.
 
@@ -40,7 +40,14 @@ cd talacert-api
 ### 2. Installer les dépendances
 
 ```bash
-composer install
+go mod download
+
+```
+Ou simplement
+
+```
+go mod tidy
+
 ```
 
 ---
@@ -58,28 +65,27 @@ DB_HOST=localhost
 DB_PORT=3306
 DB_NAME=talacert
 DB_USER=root
-DB_PASSWORD=
+DB_PASSWORD=root
+
+# JWT Configuration
+JWT_ACCESS_SECRET=4f8c9d7a2b1e5f63c8a91d4e7f2b6c5a9d3e8f1b7c4a6d2e9f5c1a8b3d7e4f6
+JWT_ACCESS_EXPIRATION=3600
+JWT_REFRESH_SECRET=a7e3d9f5b1c8e4f6d2a9c7b3f1e5d8a4c6f2b9e7d1a3f5c8e4b6d9a2c7f1e5b
+JWT_REFRESH_EXPIRATION=604800
+
+# Administration Configuration 
+ADMIN_DEFAULT_USERNAME=default
+ADMIN_DEFAULT_EMAIL=default@talacert.local
+ADMIN_DEFAULT_PASSWORD=Default@123456
 ```
 
 ---
 
-### 4. Créer la base de données
+### 4. Démarrer le serveur (Exécuter le projet)
 
 ```bash
-```
 
----
-
-### 5. Lancer les migrations
-
-```bash
-```
-
----
-
-### 6. Démarrer le serveur
-
-```bash
+.\run
 
 ```
 
@@ -94,9 +100,13 @@ start run.bat or run
 ## 🌐 Accès à l’API
 
 * Swagger UI :
+```
+http://127.0.0.1:8080/swagger/doc
+```
+
 
 ```
-http://127.0.0.1:8000/api/v1
+http://127.0.0.1:8080/api
 ```
 
 ---
@@ -105,20 +115,26 @@ http://127.0.0.1:8000/api/v1
 
 ### 📄 Documents
 
-| Méthode | Endpoint            |
-| ------- | ------------------- |
-| GET     | /api/documents      |
-| GET     | /api/documents/{id} |
-| POST    | /api/documents      |
-| PUT     | /api/documents/{id} |
-| DELETE  | /api/documents/{id} |
+| Méthode | Endpoint                        |
+| ------- | ------------------------------- |
+| POST    | /auth/login                     |
+| POST    | /auth/refresh                   |
+| POST    | /auth/logout                    |
+| GET     | /auth/me                        |
+| POST    | /api/documents                  |
+| GET     | /api/documents                  |
+| GET     | /api/documents/:document_id     |
+| PUT     | /api/documents/:document_id     |
+| DELETE  | /api/documents/:document_id     |
+| GET     | /api/documents/hash/:hash       |
+| GET     | /api/documents/verify           |
 
 ---
 
 ### 🔍 Vérification d’un document
 
 ```
-POST /api/verify
+POST /api/documents/verify
 ```
 
 #### Body :
@@ -133,11 +149,15 @@ POST /api/verify
 
 ```json
 {
-  "status": "valid",
+  "success": true,
+  "message": "Document Valid",
   "data": {
-    "owner": "Jean Tshibangu",
-    "type": "Certificat",
-    "issuer": "Université de Kinshasa"
+    "status": "valid",
+    "data": {
+      "owner": "Jean Tshibangu",
+      "type": "Certificat",
+      "issuer": "Université de Kinshasa"
+    }
   }
 }
 ```
@@ -151,36 +171,64 @@ internal/
  ├── Config/
  │    └── config.go
  │    └── database.go
+ │    └── env.go
+ │
+ ├── constants/
+ │    └── document.go
+ │    └── roles.go
  │
  ├── dto/
- │    └── document_request.go 
- │    └── document_response.go
- |    └── document_update.go
+ │    └── auth.go 
+ │    └── document.go
+ |    └── user.go
  │
- ├── mapper/
- │    └── document_mapper.go
+ ├── handlers/
+ │    └── auth_handler.go
+ │    └── document_handler.go
+ │    └── user_handler.go
+ │    └── handler.go
+ │
+ ├── logger/
+ │    └── logger.go
+ │
+ ├── middleware/
+ │    └── access_log_middleware.go
+ │    └── error_log_middleware.go
+ │    └── ownership_middleware.go
  │
  ├── models/
  │    └── document.go
  │    └── document_sequence.go
+ │    └── refresh_token.go
+ │    └── user.go
  │
  ├── repositories/
+ │    └── auth_repository.go
  │    └── document_repository.go
  │    └── document_sequence_repository.go
+ │    └── user_repository.go
  │
  ├── routes/
- │    └── routes.go
+ │    └── api_routes.go
+ │    └── auth_routes.go
+ │    └── auth_protected_routes.go
+ │    └── document_routes.go
+ │    └── swagger_routes.go
+ │    └── user_routes.go
+ │
+ ├── seed/
+ │    └── seed_manager.go
+ │    └── user_seed.go
  │
  ├── services/
+ │    └── auth_service.go
  │    └── document_service.go
+ │    └── user_service.go
  │
  ├── utils/
- │    └── hash/
- │    │   └── hash.go
- │    └── generate_document_id.go
- │
- ├── handlers/
- │    └── document_handler.go
+ │    └── hash.go
+ │    └── document_id_generator.go
+ │    └── response.go
  │
 ```
 
@@ -257,6 +305,6 @@ Développeur Full Stack & DevOps
 
 ## 💡 Vision
 
-TalaCert vise à devenir une plateforme de référence pour la vérification des documents officiels en Afrique et dans le monde.
+TalaCert vise à devenir une plateforme de référence pour la vérification des documents officiels au congo-kinshasa et dans le monde.
 
 ---

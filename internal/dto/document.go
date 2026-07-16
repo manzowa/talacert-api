@@ -18,6 +18,18 @@ type UpdateDocumentRequest struct {
 	UpdatedAt    string `json:"updated_at,omitempty"`
 }
 
+type VerificationRequest struct {
+	DocumentID string `json:"document_id" binding:"required"`
+}
+type VerificationResponse struct {
+	Status string           `json:"status"`
+	Data   VerificationData `json:"data"`
+}
+type VerificationData struct {
+	Owner  string `json:"owner"`
+	Type   string `json:"type"`
+	Issuer string `json:"issuer"`
+}
 type DocumentResponse struct {
 	DocumentID   string     `json:"document_id"`
 	OwnerName    string     `json:"owner_name,omitempty"`

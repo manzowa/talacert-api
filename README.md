@@ -262,8 +262,24 @@ Chaque document peut contenir :
 ## 🧪 Tests
 
 ```bash
-php bin/phpunit
+make test
 ```
+
+---
+
+## 🛠️ Utilisation avec Makefile
+
+### Démarrer le serveur
+make run
+
+### Compiler
+make build
+
+### Tests
+make test
+
+### Swagger
+make swagger
 
 ---
 

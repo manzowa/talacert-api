@@ -1,0 +1,24 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: talacert-api:latest
+    container_name: talacert-api
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    environment:
+      # MySQL installé sur Windows
+      DB_HOST: host.docker.internal
+      DB_PORT: 3306
+
+    ports:
+      - "8080:8080"
+
+    # Ton application cherche actuellement .env
+    volumes:
+      - ./.env:/app/.env:ro

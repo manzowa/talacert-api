@@ -15,9 +15,9 @@ func NewHash() *Hash {
 }
 
 // GenerateHash creates a SHA256 hash from a string
-func (h *Hash) GenerateHash(content string) string {
+func (h *Hash) GenerateHash(value string) string {
 
-	hash := sha256.Sum256([]byte(content))
+	hash := sha256.Sum256([]byte(value))
 
 	return hex.EncodeToString(hash[:])
 }

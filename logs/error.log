@@ -1,11 +1,1 @@
-{"time":"2026-07-15T01:15:13.9803681+02:00","level":"ERROR","msg":"failed to connect database","error":"Error 1049 (42000): Base 'talacert' inconnue"}
-{"time":"2026-07-15T01:15:13.9859473+02:00","level":"ERROR","msg":"Database connection failed","error":"Error 1049 (42000): Base 'talacert' inconnue"}
-{"time":"2026-07-15T01:17:04.1305807+02:00","level":"ERROR","msg":"Database migration failed","error":"Error 1071 (42000): La clé est trop longue. Longueur maximale: 1000"}
-{"time":"2026-07-15T01:27:46.1430469+02:00","level":"ERROR","msg":"Database migration failed","error":"Error 1071 (42000): La clé est trop longue. Longueur maximale: 1000"}
-{"time":"2026-07-15T02:12:08.6965996+02:00","level":"ERROR","msg":"Database migration failed","error":"Error 1071 (42000): La clé est trop longue. Longueur maximale: 1000"}
-{"time":"2026-07-17T15:00:13.7029584+02:00","level":"ERROR","msg":"Database connection failed","error":"dial tcp [::1]:3306: connectex: No connection could be made because the target machine actively refused it."}
-{"time":"2026-07-17T15:02:10.9148+02:00","level":"ERROR","msg":"Database connection failed","error":"dial tcp [::1]:3306: connectex: No connection could be made because the target machine actively refused it."}
-{"time":"2026-08-11T14:17:16.9370266+02:00","level":"ERROR","msg":"HTTP server failed","error":"listen tcp :8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted."}
-{"time":"2026-08-11T16:55:11.9707573+02:00","level":"ERROR","msg":"Database connection failed","error":"dial tcp: lookup mysql: no such host"}
-{"time":"2026-08-11T16:58:30.6438826+02:00","level":"ERROR","msg":"Database connection failed","error":"dial tcp: lookup mysql: no such host"}
-{"time":"2026-08-13T14:45:36.7925994+02:00","level":"ERROR","msg":"Database connection failed","error":"Error 1130: Le hôte 'host.docker.internal' n'est pas authorisé à se connecter à ce serveur MySQL"}
+{"time":"2026-08-23T21:37:03.4196865+02:00","level":"ERROR","msg":"HTTP server failed","error":"listen tcp :8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted."}

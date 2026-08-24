@@ -11,6 +11,7 @@ type APIHandler struct {
 	AuthHandler     *handlers.AuthHandler
 	DocumentHandler *handlers.DocumentHandler
 	UserHandler     *handlers.UserHandler
+	HealthHandler   *handlers.HealthHandler
 
 	JWTManager *auth.JWTManager
 }
@@ -22,6 +23,9 @@ func (h *APIHandler) Register(router *gin.Engine) {
 
 	api := router.Group("/api")
 	apiSwagger := router.Group("/swagger")
+
+	// Health check public
+	router.GET("/health", h.HealthHandler.HealthCheck)
 
 	// Routes Publiques
 	h.registerAuthRoutes(api)

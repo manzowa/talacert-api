@@ -53,7 +53,7 @@ func (h *AuthHandler) Login(cxt *gin.Context) {
 }
 
 func (h *AuthHandler) Refresh(cxt *gin.Context) {
-	var req dto.RefreshRequest
+	var req dto.LogoutRequest
 
 	if err := cxt.ShouldBindJSON(&req); err != nil {
 		utils.BadRequest(cxt, "Invalid request payload", err.Error())
@@ -74,15 +74,19 @@ func (h *AuthHandler) Refresh(cxt *gin.Context) {
 }
 
 func (h *AuthHandler) Logout(cxt *gin.Context) {
-	var req dto.RefreshRequest
+	var req dto.LogoutRequest
 
 	if err := cxt.ShouldBindJSON(&req); err != nil {
 		utils.BadRequest(cxt, "Invalid request payload", err.Error())
 		return
 	}
 
-	err := h.Service.Logout(cxt, req.RefreshToken)
+	err := h.Service.Logout(
+		cxt,
+		req.RefreshToken,
+	)
 	if err != nil {
+
 		utils.InternalServerError(cxt, "Logout failed", err.Error())
 		return
 	}

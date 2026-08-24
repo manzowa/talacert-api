@@ -12,6 +12,6 @@ type LoginResponse struct {
 	ExpiresIn    int64  `json:"expires_in"`
 }
 
-type RefreshRequest struct {
+type LogoutRequest struct {
 	RefreshToken string `json:"refresh_token" binding:"required"`
 }

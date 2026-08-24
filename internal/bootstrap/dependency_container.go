@@ -43,11 +43,13 @@ func BuildDependencyContainer(
 	authHandler := handlers.NewAuth(authService)
 	documentHandler := handlers.NewDocument(documentService)
 	userHandler := handlers.NewUser(userService)
+	healthHandler := handlers.NewHealth()
 
 	apiHandler := &routes.APIHandler{
 		AuthHandler:     authHandler,
 		DocumentHandler: documentHandler,
 		UserHandler:     userHandler,
+		HealthHandler:   healthHandler,
 		JWTManager:      jwtManager,
 	}
 

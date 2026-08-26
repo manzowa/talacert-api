@@ -1,2 +1,3 @@
 {"time":"2026-08-23T21:37:03.4196865+02:00","level":"ERROR","msg":"HTTP server failed","error":"listen tcp :8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted."}
 {"time":"2026-08-26T13:50:23.8061814+02:00","level":"ERROR","msg":"HTTP server failed","error":"listen tcp :8080: bind: Only one usage of each socket address (protocol/network address/port) is normally permitted."}
+{"time":"2026-08-26T16:03:28.6093065+02:00","level":"ERROR","msg":"Database connection failed","error":"dial tcp [::1]:3306: connectex: No connection could be made because the target machine actively refused it."}

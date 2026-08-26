@@ -118,3 +118,10 @@
 {"time":"2026-08-26T14:41:32.7991639+02:00","level":"INFO","msg":"Admin user already exists"}
 {"time":"2026-08-26T14:41:32.7991639+02:00","level":"INFO","msg":"Database seed completed"}
 {"time":"2026-08-26T14:41:32.8034888+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-26T16:03:28.5531783+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-26T16:04:14.4431075+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-26T16:04:14.6817332+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-26T16:04:15.0270056+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-26T16:04:15.0288099+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-26T16:04:15.0288099+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-26T16:04:15.0314707+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}

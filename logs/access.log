@@ -131,3 +131,15 @@
 {"time":"2026-08-26T16:10:55.2558729+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/swagger/swagger-ui/favicon-32x32.png","status":200,"ip":"127.0.0.1","duration":1630700}
 {"time":"2026-08-26T16:11:11.2243659+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/health","status":200,"ip":"127.0.0.1","duration":9805700}
 {"time":"2026-08-26T16:11:20.1219188+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/health","status":200,"ip":"127.0.0.1","duration":0}
+{"time":"2026-08-26T18:22:58.9940175+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/swagger/swagger-ui/swagger-initializer.js","status":304,"ip":"::1","duration":23572000}
+{"time":"2026-08-26T18:22:59.6203242+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/swagger/swagger-ui/index.css","status":200,"ip":"::1","duration":658917600}
+{"time":"2026-08-26T18:23:00.1895668+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/swagger/docs/swagger.json","status":304,"ip":"::1","duration":4286500}
+{"time":"2026-08-26T18:28:26.8662933+02:00","level":"INFO","msg":"HTTP Request","method":"POST","path":"/api/auth/login","status":404,"ip":"::1","duration":2999400}
+{"time":"2026-08-26T18:28:59.7040703+02:00","level":"INFO","msg":"HTTP Request","method":"POST","path":"/api/v1/auth/login","status":200,"ip":"::1","duration":617189600}
+{"time":"2026-08-26T18:30:01.6287233+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/api/v1/auth/me","status":200,"ip":"::1","duration":39943400}
+{"time":"2026-08-26T18:30:29.8181965+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/api/v1/users","status":200,"ip":"::1","duration":102923400}
+{"time":"2026-08-26T18:31:54.7681252+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/health","status":200,"ip":"::1","duration":19280000}
+{"time":"2026-08-26T18:32:14.3008635+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/health","status":200,"ip":"127.0.0.1","duration":0}
+{"time":"2026-08-26T18:39:14.0913051+02:00","level":"INFO","msg":"HTTP Request","method":"POST","path":"/api/auth/logout","status":404,"ip":"::1","duration":5026600}
+{"time":"2026-08-26T18:39:27.1868567+02:00","level":"INFO","msg":"HTTP Request","method":"POST","path":"/api/v1/auth/logout","status":200,"ip":"::1","duration":389933100}
+{"time":"2026-08-26T18:39:48.8392128+02:00","level":"INFO","msg":"HTTP Request","method":"GET","path":"/health","status":200,"ip":"127.0.0.1","duration":2996600}

@@ -69,7 +69,7 @@ func (h *APIHandler) registerDocumentRoutes(
 		h.DocumentHandler.GetByHash,
 	)
 
-	documents.GET(
+	documents.POST(
 		"/verify",
 		auth.RequireRole(
 			constants.RoleUser.String(),

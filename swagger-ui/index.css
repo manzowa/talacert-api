@@ -14,3 +14,20 @@ body {
     margin: 0;
     background: #fafafa;
 }
+
+.swagger-ui .topbar {
+    background-color: #000000;
+}
+
+.swagger-ui .topbar .link {
+    display: none;
+}
+
+.swagger-ui .topbar::before {
+    content: "TalaCert API";
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 700;
+    display: block;
+    padding: 15px 20px;
+}

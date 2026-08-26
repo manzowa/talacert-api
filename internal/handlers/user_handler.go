@@ -21,6 +21,19 @@ func NewUser(service *services.UserService) *UserHandler {
 	}
 }
 
+// Create godoc
+// @Summary      Create user
+// @Description  Creates a new user.
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        request  body  dto.CreateUserRequest  true  "User data"
+// @Success      201  {object}  interface{}  "User created successfully"
+// @Failure      400  {object}  interface{}  "Invalid request payload"
+// @Failure      409  {object}  interface{}  "User already exists"
+// @Failure      500  {object}  interface{}  "Failed to create user"
+// @Router       /api/v1/users [post]
 func (h *UserHandler) Create(cxt *gin.Context) {
 
 	var req dto.CreateUserRequest
@@ -68,6 +81,15 @@ func (h *UserHandler) Create(cxt *gin.Context) {
 	)
 }
 
+// GetAll godoc
+// @Summary      Get all users
+// @Description  Retrieves all users.
+// @Tags         Users
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  interface{}  "Users retrieved successfully"
+// @Failure      500  {object}  interface{}  "Failed to retrieve users"
+// @Router       /api/v1/users [get]
 func (h *UserHandler) GetAll(cxt *gin.Context) {
 
 	users, err := h.Service.GetAll(
@@ -92,6 +114,18 @@ func (h *UserHandler) GetAll(cxt *gin.Context) {
 	)
 }
 
+// GetByID godoc
+// @Summary      Get user by ID
+// @Description  Retrieves a user by their unique identifier.
+// @Tags         Users
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id  path  int  true  "User ID"
+// @Success      200  {object}  interface{}  "User retrieved successfully"
+// @Failure      400  {object}  interface{}  "Invalid user ID"
+// @Failure      404  {object}  interface{}  "User not found"
+// @Failure      500  {object}  interface{}  "Failed to retrieve user"
+// @Router       /api/v1/users/{id} [get]
 func (h *UserHandler) GetByID(cxt *gin.Context) {
 
 	id, err := parseID(cxt)
@@ -138,6 +172,21 @@ func (h *UserHandler) GetByID(cxt *gin.Context) {
 	)
 }
 
+// Update godoc
+// @Summary      Update user
+// @Description  Updates an existing user.
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path  int                    true  "User ID"
+// @Param        request  body  dto.UpdateUserRequest  true  "User data"
+// @Success      200  {object}  interface{}  "User updated successfully"
+// @Failure      400  {object}  interface{}  "Invalid user ID or request payload"
+// @Failure      404  {object}  interface{}  "User not found"
+// @Failure      409  {object}  interface{}  "User already exists"
+// @Failure      500  {object}  interface{}  "Failed to update user"
+// @Router       /api/v1/users/{id} [patch]
 func (h *UserHandler) Update(cxt *gin.Context) {
 
 	id, err := parseID(cxt)
@@ -205,6 +254,18 @@ func (h *UserHandler) Update(cxt *gin.Context) {
 	)
 }
 
+// Delete godoc
+// @Summary      Delete user
+// @Description  Deletes a user by their unique identifier.
+// @Tags         Users
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id  path  int  true  "User ID"
+// @Success      200  {object}  interface{}  "User deleted successfully"
+// @Failure      400  {object}  interface{}  "Invalid user ID"
+// @Failure      404  {object}  interface{}  "User not found"
+// @Failure      500  {object}  interface{}  "Failed to delete user"
+// @Router       /api/v1/users/{id} [delete]
 func (h *UserHandler) Delete(cxt *gin.Context) {
 
 	id, err := parseID(cxt)
@@ -247,6 +308,19 @@ func (h *UserHandler) Delete(cxt *gin.Context) {
 	)
 }
 
+// ChangePassword godoc
+// @Summary      Change user password
+// @Description  Changes the password of an existing user.
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path  int                         true  "User ID"
+// @Param        request  body  dto.UserChangePasswordRequest  true  "New password"
+// @Success      200  {object}  interface{}  "Password changed successfully"
+// @Failure      400  {object}  interface{}  "Invalid user ID or request payload"
+// @Failure      500  {object}  interface{}  "Failed to change password"
+// @Router       /api/v1/users/{id}/password [patch]
 func (h *UserHandler) ChangePassword(cxt *gin.Context) {
 
 	id, err := parseID(cxt)
@@ -293,6 +367,19 @@ func (h *UserHandler) ChangePassword(cxt *gin.Context) {
 	)
 }
 
+// ChangeRole godoc
+// @Summary      Change user role
+// @Description  Changes the role of an existing user.
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path  int                       true  "User ID"
+// @Param        request  body  dto.UserChangeRoleRequest true  "New user role"
+// @Success      200  {object}  interface{}  "Role changed successfully"
+// @Failure      400  {object}  interface{}  "Invalid user ID or request payload"
+// @Failure      500  {object}  interface{}  "Failed to change role"
+// @Router       /api/v1/users/{id}/role [patch]
 func (h *UserHandler) ChangeRole(cxt *gin.Context) {
 
 	id, err := parseID(cxt)

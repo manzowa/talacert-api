@@ -21,6 +21,16 @@ func NewAuth(service *services.AuthService) *AuthHandler {
 	}
 }
 
+// Login godoc
+// @Summary      Connexion
+// @Description  Authentifie un utilisateur et retourne les tokens JWT.
+// @Tags         Authentication
+// @Accept       json
+// @Produce      json
+// @Param        credentials  body  dto.LoginRequest  true  "Identifiants"
+// @Success      200  {object}  dto.LoginResponse
+// @Failure      401  {object} interface{} "Authentication failed"
+// @Router       /api/v1/auth/login [post]
 func (h *AuthHandler) Login(cxt *gin.Context) {
 	var req dto.LoginRequest
 
@@ -52,6 +62,17 @@ func (h *AuthHandler) Login(cxt *gin.Context) {
 
 }
 
+// Refresh godoc
+// @Summary      Refresh access token
+// @Description  Génère un nouvel access token à partir d'un refresh token valide.
+// @Tags         Authentication
+// @Accept       json
+// @Produce      json
+// @Param        request body dto.LogoutRequest true "Refresh token"
+// @Success      200 {object} interface{} "Token refreshed successfully"
+// @Failure      400 {object} interface{} "Invalid request payload"
+// @Failure      401 {object} interface{} "Token refresh failed"
+// @Router       /api/v1/auth/refresh [post]
 func (h *AuthHandler) Refresh(cxt *gin.Context) {
 	var req dto.LogoutRequest
 
@@ -73,6 +94,17 @@ func (h *AuthHandler) Refresh(cxt *gin.Context) {
 	utils.Ok(cxt, "Token refreshed successfully", response)
 }
 
+// Logout godoc
+// @Summary      Logout
+// @Description  Invalide le refresh token de l'utilisateur et termine sa session.
+// @Tags         Authentication
+// @Accept       json
+// @Produce      json
+// @Param        request body dto.LogoutRequest true "Refresh token"
+// @Success      200 {object} interface{} "Logout successful"
+// @Failure      400 {object} interface{} "Invalid request payload"
+// @Failure      500 {object} interface{} "Logout failed"
+// @Router       /api/v1/auth/logout [post]
 func (h *AuthHandler) Logout(cxt *gin.Context) {
 	var req dto.LogoutRequest
 
@@ -94,6 +126,16 @@ func (h *AuthHandler) Logout(cxt *gin.Context) {
 	utils.Ok(cxt, "Logout successful", nil)
 }
 
+// Me godoc
+// @Summary      Get current user
+// @Description  Retourne les informations de l'utilisateur actuellement authentifié.
+// @Tags         Authentication
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200 {object} dto.UserResponse "User retrieved successfully"
+// @Failure      401 {object} interface{} "User not found in context"
+// @Failure      500 {object} interface{} "Invalid user data in context"
+// @Router       /api/v1/auth/me [get]
 func (h *AuthHandler) Me(cxt *gin.Context) {
 	userValue, exists := cxt.Get(auth.ContextUser)
 	if !exists {

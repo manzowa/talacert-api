@@ -1,8 +1,8 @@
 # 📄 TalaCert API
 
-TalaCert est une API de vérification de documents officiels (certificats, diplômes, attestations) basée sur GIN et GORM.
+TalaCert est une API de vérification de documents officiels (certificats, diplômes, attestations) basée sur **Go, Gin et GORM**.
 
-L'objectif est de permettre à toute personne ou organisation de vérifier rapidement l'authenticité d’un document via un identifiant unique ou un QR code.
+L'objectif est de permettre à toute personne ou organisation de vérifier rapidement l'authenticité d’un document via un identifiant unique, un hash ou un QR Code.
 
 ---
 
@@ -10,25 +10,97 @@ L'objectif est de permettre à toute personne ou organisation de vérifier rapid
 
 * ✅ CRUD complet des documents
 * 🔍 Vérification d’authenticité via API
-* 🔐 Gestion de hash (sécurité des documents)
+* 🔐 Gestion de hash pour l’intégrité des documents
 * 📱 Intégration possible avec QR Code
-* ⛓ Compatible blockchain (hash + transaction)
-* 📊 API REST avec documentation automatique (Swagger)
+* ⛓️ Compatible blockchain (hash + transaction)
+* 📊 API REST avec documentation automatique via Swagger
+* 🔑 Authentification JWT avec access token et refresh token
+* 🧪 Tests automatisés
+* 🛠️ Commandes Makefile pour simplifier le développement
 
 ---
 
 ## 🧱 Stack technique
 
-* GO
-* GIN
-* GORM ORM
-* MySQL /MariaDB 
+* **Go**
+* **Gin**
+* **GORM**
+* **MySQL / MariaDB**
+* **JWT**
+* **Swagger**
+* **Make**
 
 ---
 
-## ⚙️ Installation
+## 📁 Structure générale
 
-### 1. Cloner le projet
+Le point d'entrée de l'application est :
+
+```text
+cmd/main.go
+```
+
+La structure principale du projet est organisée comme suit :
+
+```text
+.
+├── cmd/
+│   └── main.go
+│
+├── internal/
+│   ├── config/
+│   ├── constants/
+│   ├── dto/
+│   ├── handlers/
+│   ├── logger/
+│   ├── middleware/
+│   ├── models/
+│   ├── repositories/
+│   ├── routes/
+│   ├── seed/
+│   ├── services/
+│   └── utils/
+│
+├── bin/
+│   └── talacert-api
+│
+├── .env
+├── go.mod
+├── go.sum
+├── Makefile
+└── README.md
+```
+
+Le dossier `bin/` est généré automatiquement lors de la compilation et ne doit généralement pas être versionné dans Git.
+
+---
+
+# ⚙️ Installation
+
+## 1. Prérequis
+
+Avant de commencer, assurez-vous d'avoir installé :
+
+* **Go**
+* **Make**
+* **MySQL ou MariaDB**
+* **Git**
+
+Vérifier l'installation de Go :
+
+```bash
+go version
+```
+
+Vérifier Make :
+
+```bash
+make --version
+```
+
+---
+
+## 2. Cloner le projet
 
 ```bash
 git clone https://github.com/ton-repo/talacert-api.git
@@ -37,28 +109,55 @@ cd talacert-api
 
 ---
 
-### 2. Installer les dépendances
+## 3. Installer les dépendances
+
+Le projet utilise Go Modules.
+
+Avec Make :
+
+```bash
+make install
+```
+
+Cette commande exécute :
 
 ```bash
 go mod download
-
 ```
-Ou simplement
 
-```
-go mod tidy
+Vous pouvez également utiliser directement :
 
+```bash
+go mod download
 ```
 
 ---
 
-### 3. Configuration de la base de données
+## 4. Nettoyer les dépendances
 
-Modifier le fichier `.env` :
+Pour synchroniser et nettoyer les dépendances du projet :
+
+```bash
+make tidy
+```
+
+Cette commande exécute :
+
+```bash
+go mod tidy
+```
+
+---
+
+# 🗄️ Configuration de la base de données
+
+Créer ou modifier le fichier `.env` :
 
 ```env
 APP_ENV=development
+
 GIN_MODE=debug
+
 PORT=8080
 
 DB_HOST=localhost
@@ -68,92 +167,322 @@ DB_USER=root
 DB_PASSWORD=root
 
 # JWT Configuration
-JWT_ACCESS_SECRET=4f8c9d7a2b1e5f63c8a91d4e7f2b6c5a9d3e8f1b7c4a6d2e9f5c1a8b3d7e4f6
+JWT_ACCESS_SECRET=your-access-secret
 JWT_ACCESS_EXPIRATION=3600
-JWT_REFRESH_SECRET=a7e3d9f5b1c8e4f6d2a9c7b3f1e5d8a4c6f2b9e7d1a3f5c8e4b6d9a2c7f1e5b
+
+JWT_REFRESH_SECRET=your-refresh-secret
 JWT_REFRESH_EXPIRATION=604800
 
-# Administration Configuration 
+# Administration Configuration
 ADMIN_DEFAULT_USERNAME=default
 ADMIN_DEFAULT_EMAIL=default@talacert.local
-ADMIN_DEFAULT_PASSWORD=Default@123456
+ADMIN_DEFAULT_PASSWORD=change-me
+```
+
+> ⚠️ **Important :** les secrets JWT et les identifiants administrateur doivent être remplacés par des valeurs sécurisées. Ne committez jamais votre véritable fichier `.env` dans le dépôt Git.
+
+Il est recommandé d'ajouter `.env` au `.gitignore`.
+
+---
+
+# ▶️ Démarrage du projet
+
+Le `Makefile` définit `cmd/main.go` comme point d'entrée de l'application.
+
+## Mode développement
+
+Pour démarrer directement l'application :
+
+```bash
+make run
+```
+
+Cette commande exécute :
+
+```bash
+go run cmd/main.go
+```
+
+Le serveur sera normalement disponible sur :
+
+```text
+http://127.0.0.1:8080
 ```
 
 ---
 
-### 4. Démarrer le serveur (Exécuter le projet)
+# 🏗️ Compilation
+
+Pour compiler l'application :
 
 ```bash
-
-.\run
-
+make build
 ```
 
-Ou sous Windows :
+Le binaire sera généré dans :
 
-```bash
-start run.bat or run 
+### Linux / macOS
+
+```text
+bin/talacert-api
+```
+
+### Windows
+
+```text
+bin/talacert-api.exe
+```
+
+La commande utilise automatiquement l'extension `.exe` sous Windows.
+
+Le comportement est défini dans le `Makefile` :
+
+```makefile
+APP_NAME=talacert-api
+MAIN_PATH=cmd/main.go
 ```
 
 ---
 
-## 🌐 Accès à l’API
+# ▶️ Exécution du binaire
 
-* Swagger UI :
+Après compilation, sous Linux/macOS :
+
+```bash
+./bin/talacert-api
 ```
+
+Sous Windows :
+
+```powershell
+.\bin\talacert-api.exe
+```
+
+---
+
+# 🧹 Nettoyage
+
+Pour supprimer le dossier `bin/` :
+
+```bash
+make clean
+```
+
+Sous Linux/macOS, le Makefile utilise :
+
+```bash
+rm -rf bin
+```
+
+Sous Windows :
+
+```cmd
+if exist bin rmdir /s /q bin
+```
+
+Le `Makefile` détecte automatiquement Windows grâce à :
+
+```makefile
+ifeq ($(OS),Windows_NT)
+```
+
+---
+
+# 🧪 Tests
+
+Pour exécuter tous les tests du projet :
+
+```bash
+make test
+```
+
+Cette commande exécute :
+
+```bash
+go test ./...
+```
+
+Vous pouvez également utiliser directement :
+
+```bash
+go test ./...
+```
+
+---
+
+# 🧹 Formatage du code
+
+Pour formater automatiquement le code Go :
+
+```bash
+make fmt
+```
+
+Cette commande exécute :
+
+```bash
+go fmt ./...
+```
+
+---
+
+# 🔎 Vérification du code
+
+Pour exécuter l'analyse statique de Go :
+
+```bash
+make vet
+```
+
+Cette commande exécute :
+
+```bash
+go vet ./...
+```
+
+Il est recommandé d'exécuter `make fmt` et `make vet` avant de pousser des modifications.
+
+---
+
+# 📚 Documentation Swagger
+
+La documentation Swagger est générée avec :
+
+```bash
+make swagger
+```
+
+Cette commande exécute :
+
+```bash
+swag init -g cmd/main.go
+```
+
+Le fichier `cmd/main.go` est donc utilisé comme point d'entrée pour la génération de la documentation Swagger.
+
+Après avoir démarré l'application, Swagger UI est accessible à :
+
+```text
 http://127.0.0.1:8080/swagger/doc
 ```
 
+---
 
+# 🛠️ Commandes Makefile
+
+Le projet fournit les commandes suivantes :
+
+| Commande       | Description                            |
+| -------------- | -------------------------------------- |
+| `make`         | Démarre l'application (`make run`)     |
+| `make all`     | Démarre l'application                  |
+| `make install` | Télécharge les dépendances             |
+| `make tidy`    | Nettoie et synchronise les dépendances |
+| `make build`   | Compile l'application dans `bin/`      |
+| `make run`     | Lance l'application avec `go run`      |
+| `make test`    | Exécute les tests                      |
+| `make swagger` | Génère la documentation Swagger        |
+| `make clean`   | Supprime le dossier `bin/`             |
+| `make fmt`     | Formate le code Go                     |
+| `make vet`     | Analyse le code avec `go vet`          |
+
+---
+
+# 🌐 Accès à l’API
+
+## Health Check
+
+```http
+GET /health
 ```
+
+Exemple :
+
+```text
+http://127.0.0.1:8080/health
+```
+
+---
+
+## Swagger UI
+
+```text
+http://127.0.0.1:8080/swagger/doc
+```
+
+---
+
+## API
+
+```text
 http://127.0.0.1:8080/api
 ```
 
 ---
 
-## 📡 Endpoints principaux
+# 📡 Endpoints principaux
 
-### 📄 Documents
+## 🔐 Authentification
 
-| Méthode | Endpoint                        |
-| ------- | ------------------------------- |
-| POST    | /auth/login                     |
-| POST    | /auth/refresh                   |
-| POST    | /auth/logout                    |
-| GET     | /auth/me                        |
-| POST    | /api/documents                  |
-| GET     | /api/documents                  |
-| GET     | /api/documents/:document_id     |
-| PUT     | /api/documents/:document_id     |
-| DELETE  | /api/documents/:document_id     |
-| GET     | /api/documents/hash/:hash       |
-| GET     | /api/documents/verify           |
+| Méthode | Endpoint               |
+| ------- | ---------------------- |
+| POST    | `/api/v1/auth/login`   |
+| POST    | `/api/v1/auth/refresh` |
+| POST    | `/api/v1/auth/logout`  |
+| GET     | `/api/v1/auth/me`      |
 
 ---
 
-### 🔍 Vérification d’un document
+## 📄 Documents
 
+| Méthode | Endpoint                                |
+| ------- | --------------------------------------- |
+| POST    | `/api/v1/documents`                     |
+| GET     | `/api/v1/documents`                     |
+| GET     | `/api/v1/documents/:document_id`        |
+| PATCH   | `/api/v1/documents/:document_id`        |
+| DELETE  | `/api/v1/documents/:document_id`        |
+| GET     | `/api/v1/documents/by-hash/:hash`       |
+| GET     | `/api/v1/documents/verify`              |
+
+Tous les endpoints utilisent uniformément la version :
+
+```text
+/api/v1
 ```
-POST /api/documents/verify
+
+---
+
+# 🔍 Vérification d’un document
+
+La vérification d'un document s'effectue à partir de son identifiant.
+
+### Endpoint
+
+```http
+GET /api/v1/documents/verify
 ```
 
-#### Body :
+### Exemple
 
-```json
+```http
+GET /api/v1/documents/verify
+```
+```Body
 {
   "document_id": "CERT-2025-0001"
 }
 ```
 
-#### Réponse :
+### Réponse
 
 ```json
 {
   "success": true,
-  "message": "Document Valid",
+  "message": "Document valid",
   "data": {
     "status": "valid",
-    "data": {
+    "document": {
       "owner": "Jean Tshibangu",
       "type": "Certificat",
       "issuer": "Université de Kinshasa"
@@ -164,163 +493,183 @@ POST /api/documents/verify
 
 ---
 
-## 🗄 Structure du projet
+# 🔐 Recherche par hash
 
+Un document peut être retrouvé à partir de son hash.
+
+### Endpoint
+
+```http
+GET /api/v1/documents/by-hash/:hash
 ```
-internal/
- ├── Config/
- │    └── config.go
- │    └── database.go
- │    └── env.go
- │
- ├── constants/
- │    └── document.go
- │    └── roles.go
- │
- ├── dto/
- │    └── auth.go 
- │    └── document.go
- |    └── user.go
- │
- ├── handlers/
- │    └── auth_handler.go
- │    └── document_handler.go
- │    └── user_handler.go
- │    └── handler.go
- │
- ├── logger/
- │    └── logger.go
- │
- ├── middleware/
- │    └── access_log_middleware.go
- │    └── error_log_middleware.go
- │    └── ownership_middleware.go
- │
- ├── models/
- │    └── document.go
- │    └── document_sequence.go
- │    └── refresh_token.go
- │    └── user.go
- │
- ├── repositories/
- │    └── auth_repository.go
- │    └── document_repository.go
- │    └── document_sequence_repository.go
- │    └── user_repository.go
- │
- ├── routes/
- │    └── api_routes.go
- │    └── auth_routes.go
- │    └── auth_protected_routes.go
- │    └── document_routes.go
- │    └── swagger_routes.go
- │    └── user_routes.go
- │
- ├── seed/
- │    └── seed_manager.go
- │    └── user_seed.go
- │
- ├── services/
- │    └── auth_service.go
- │    └── document_service.go
- │    └── user_service.go
- │
- ├── utils/
- │    └── hash.go
- │    └── document_id_generator.go
- │    └── response.go
- │
+
+### Exemple
+
+```http
+GET /api/v1/documents/by-hash/9f86d081884c7d659a2feaa0c55ad015
+```
+
+Cette fonctionnalité permet notamment de vérifier l'intégrité d'un document et pourra être utilisée dans le cadre d'une future intégration blockchain.
+
+---
+
+# ✏️ Modification d’un document
+
+Les modifications partielles utilisent `PATCH`.
+
+### Endpoint
+
+```http
+PATCH /api/v1/documents/:document_id
+```
+
+### Exemple
+
+```http
+PATCH /api/v1/documents/CERT-2025-0001
+```
+
+### Body
+
+```json
+{
+  "owner": "Jean Tshibangu",
+  "issuer": "Université de Kinshasa",
+  "status": "valid"
+}
 ```
 
 ---
 
-## 🔐 Sécurité
+# 🔐 Sécurité
 
-* Hash SHA256 pour l’intégrité des documents
-* Possibilité d’ajouter JWT Authentication
-* Support de signature numérique
-* Intégration future avec blockchain
+TalaCert utilise ou prévoit les mécanismes suivants :
 
----
+* 🔒 Hash SHA-256 pour l'intégrité des documents
+* 🔑 Authentification JWT
+* ♻️ Access tokens et refresh tokens
+* 🛡️ Contrôle d'accès aux ressources
+* 👤 Gestion de l'ownership des documents
+* ✍️ Possibilité d'ajouter une signature numérique
+* ⛓️ Intégration blockchain future
 
-## ⛓ Intégration Blockchain (optionnel)
-
-Chaque document peut contenir :
-
-* hash du document
-* transaction blockchain (Ethereum, Polygon, etc.)
+Les secrets JWT doivent être stockés dans les variables d'environnement.
 
 ---
 
-## 📌 Statuts des documents
+# ⛓️ Intégration Blockchain
 
-* `valid`
-* `invalid`
+Chaque document pourra éventuellement être associé à des informations blockchain :
+
+```text
+document
+├── hash
+├── blockchain
+├── transaction_hash
+└── network
+```
+
+La blockchain pourra servir à enregistrer une preuve d'existence ou d'intégrité du document sans avoir besoin de stocker le document lui-même sur la blockchain.
 
 ---
 
-## 🧪 Tests
+# 📌 Statuts des documents
+
+Statuts actuellement supportés :
+
+```text
+valid
+invalid
+```
+
+Statuts pouvant être ajoutés ultérieurement :
+
+```text
+pending
+revoked
+expired
+```
+
+---
+
+# 🚀 Roadmap
+
+* [x] Authentification JWT
+* [x] CRUD des documents
+* [x] Vérification des documents
+* [x] Recherche par hash
+* [x] Makefile pour le développement
+* [x] Documentation Swagger
+* [ ] Upload de fichiers PDF
+* [ ] Génération de QR Code
+* [ ] Signature numérique
+* [ ] Intégration Blockchain
+* [ ] Dashboard Admin
+* [ ] Notifications email/SMS
+* [ ] Gestion des documents révoqués
+* [ ] Gestion de l'expiration des documents
+
+---
+
+# 🤝 Contribution
+
+Les contributions sont les bienvenues !
+
+### 1. Fork du projet
+
+### 2. Créer une branche
+
+```bash
+git checkout -b feature/ma-feature
+```
+
+### 3. Développer la fonctionnalité
+
+### 4. Formater et vérifier le code
+
+```bash
+make fmt
+make vet
+```
+
+### 5. Exécuter les tests
 
 ```bash
 make test
 ```
 
----
+### 6. Commit
 
-## 🛠️ Utilisation avec Makefile
+```bash
+git commit -m "feat: ajout de ma fonctionnalité"
+```
 
-### Démarrer le serveur
-make run
+### 7. Push
 
-### Compiler
-make build
+```bash
+git push origin feature/ma-feature
+```
 
-### Tests
-make test
-
-### Swagger
-make swagger
+### 8. Créer une Pull Request
 
 ---
 
-## 🚀 Roadmap
-
-* [ ] Authentification JWT
-* [ ] Upload de fichiers PDF
-* [ ] Génération QR Code
-* [ ] Intégration Blockchain
-* [ ] Dashboard Admin
-* [ ] Notifications (email/SMS)
-
----
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues !
-
-1. Fork le projet
-2. Crée une branche (`feature/...`)
-3. Commit
-4. Push
-5. Pull Request
-
----
-
-## 📄 Licence
+# 📄 Licence
 
 MIT
 
 ---
 
-## 👨‍💻 Auteur
+# 👨‍💻 Auteur
 
-Christian Shungu
+**Christian Shungu**
+
 Développeur Full Stack & DevOps
 
 ---
 
-## 💡 Vision
+# 💡 Vision
 
-TalaCert vise à devenir une plateforme de référence pour la vérification des documents officiels au congo-kinshasa et dans le monde.
+TalaCert vise à devenir une plateforme de référence pour la **vérification fiable et sécurisée des documents officiels**, d'abord en République démocratique du Congo, puis à l'international.
 
----
+L'objectif à long terme est de fournir une infrastructure permettant aux universités, administrations, entreprises et organismes émetteurs de publier des documents vérifiables, tout en permettant aux tiers de contrôler leur authenticité rapidement via une API, un identifiant unique, un hash ou un QR Code.

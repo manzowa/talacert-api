@@ -30,7 +30,7 @@ func (h *APIHandler) registerDocumentRoutes(
 			constants.RoleManager.String(),
 			constants.RoleAdmin.String(),
 		),
-		h.DocumentHandler.GetByDocumentID,
+		h.DocumentHandler.GetByDocument,
 	)
 
 	documents.POST(
@@ -60,7 +60,7 @@ func (h *APIHandler) registerDocumentRoutes(
 	)
 
 	documents.GET(
-		"/hash/:hash",
+		"/by-hash/:hash",
 		auth.RequireRole(
 			constants.RoleUser.String(),
 			constants.RoleManager.String(),

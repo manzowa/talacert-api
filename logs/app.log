@@ -52,3 +52,69 @@
 {"time":"2026-08-24T16:44:06.3911856+02:00","level":"INFO","msg":"Admin user already exists"}
 {"time":"2026-08-24T16:44:06.3927329+02:00","level":"INFO","msg":"Database seed completed"}
 {"time":"2026-08-24T16:44:06.4322057+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-25T12:49:57.8990959+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-25T12:50:00.4021571+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-25T12:50:00.9204579+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-25T12:50:00.9313289+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-25T12:50:00.9313289+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-25T12:50:00.9422541+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-25T13:17:09.9273499+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-25T13:17:10.7586113+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-25T13:17:11.0838559+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-25T13:17:11.0865418+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-25T13:17:11.087046+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-25T13:17:11.0923521+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-25T13:34:12.002374+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-25T13:34:13.2265399+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-25T13:34:13.6470561+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-25T13:34:13.6539416+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-25T13:34:13.6544764+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-25T13:34:13.6686884+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-25T13:58:57.1050578+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-25T13:58:59.0886842+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-25T13:58:59.3991617+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-25T13:58:59.4021507+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-25T13:58:59.4021507+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-25T13:58:59.4093885+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-25T15:37:56.3385899+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-25T15:37:56.5032406+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-25T15:37:56.7535596+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-25T15:37:56.7562639+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-25T15:37:56.7567741+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-25T15:37:56.7613425+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-26T13:33:10.259489+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-26T13:33:11.5464152+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-26T13:33:12.0747398+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-26T13:33:12.0798959+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-26T13:33:12.0804137+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-26T13:33:12.0825691+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-26T13:50:20.8094112+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-26T13:50:23.2807876+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-26T13:50:23.7908167+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-26T13:50:23.794282+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-26T13:50:23.7948422+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-26T13:50:23.8006698+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-26T13:59:21.1519803+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-26T13:59:22.3911174+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-26T13:59:23.1086463+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-26T13:59:23.1134938+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-26T13:59:23.1141003+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-26T13:59:23.1296388+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-26T14:13:29.564321+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-26T14:13:30.3843865+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-26T14:13:30.9363008+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-26T14:13:30.9394575+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-26T14:13:30.9399987+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-26T14:13:30.9480256+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-26T14:27:55.8458792+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-26T14:27:56.0581161+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-26T14:27:56.3026994+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-26T14:27:56.3043475+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-26T14:27:56.304937+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-26T14:27:56.3082396+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}
+{"time":"2026-08-26T14:41:31.9012101+02:00","level":"INFO","msg":"Initializing application"}
+{"time":"2026-08-26T14:41:32.3283948+02:00","level":"INFO","msg":"Database connected"}
+{"time":"2026-08-26T14:41:32.7937119+02:00","level":"INFO","msg":"Database migration completed"}
+{"time":"2026-08-26T14:41:32.7991639+02:00","level":"INFO","msg":"Admin user already exists"}
+{"time":"2026-08-26T14:41:32.7991639+02:00","level":"INFO","msg":"Database seed completed"}
+{"time":"2026-08-26T14:41:32.8034888+02:00","level":"INFO","msg":"Starting HTTP server","port":"8080"}

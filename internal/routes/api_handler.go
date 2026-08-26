@@ -21,7 +21,7 @@ func (h *APIHandler) Register(router *gin.Engine) {
 	// Route Static
 	//router.Static("/docs", "./docs")
 
-	api := router.Group("/api")
+	api := router.Group("/api/v1")
 	apiSwagger := router.Group("/swagger")
 
 	// Health check public

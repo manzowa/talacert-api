@@ -24,6 +24,18 @@ func NewDocument(service *services.DocumentService) *DocumentHandler {
 	}
 }
 
+// Create godoc
+// @Summary      Create document
+// @Description  Creates a new official document.
+// @Tags         Documents
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        document  body  dto.CreateDocumentRequest  true  "Document data"
+// @Success      201  {object}  interface{}  "Document created successfully"
+// @Failure      400  {object}  interface{}  "Invalid request payload"
+// @Failure      500  {object}  interface{}  "Failed to create document"
+// @Router       /api/v1/documents [post]
 func (h *DocumentHandler) Create(
 	cxt *gin.Context,
 ) {
@@ -52,6 +64,15 @@ func (h *DocumentHandler) Create(
 	)
 }
 
+// GetAll godoc
+// @Summary      Get all documents
+// @Description  Retrieves all documents.
+// @Tags         Documents
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  interface{}  "Documents retrieved successfully"
+// @Failure      500  {object}  interface{}  "Failed to retrieve documents"
+// @Router       /api/v1/documents [get]
 func (h *DocumentHandler) GetAll(
 	cxt *gin.Context,
 ) {
@@ -70,7 +91,18 @@ func (h *DocumentHandler) GetAll(
 	)
 }
 
-func (h *DocumentHandler) GetByDocumentID(
+// GetDocument godoc
+// @Summary      Get document
+// @Description  Retrieves a document by its unique identifier.
+// @Tags         Documents
+// @Produce      json
+// @Security     BearerAuth
+// @Param        document_id  path  string  true  "Document ID"
+// @Success      200  {object}  dto.DocumentResponse  "Document retrieved successfully"
+// @Failure      400  {object}  interface{}  "Invalid document ID"
+// @Failure      404  {object}  interface{}  "Document not found"
+// @Router       /api/v1/documents/{document_id} [get]
+func (h *DocumentHandler) GetByDocument(
 	cxt *gin.Context,
 ) {
 	documentID := cxt.Param("document_id")
@@ -96,7 +128,6 @@ func (h *DocumentHandler) GetByDocumentID(
 		Type:       document.Type,
 		Issuer:     document.Issuer,
 		Hash:       document.Hash,
-		Status:     document.Status,
 		CreatedAt:  document.CreatedAt,
 	}
 
@@ -104,6 +135,19 @@ func (h *DocumentHandler) GetByDocumentID(
 
 }
 
+// Update godoc
+// @Summary      Update document
+// @Description  Updates an existing document. Only the provided fields need to be supplied.
+// @Tags         Documents
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        document_id  path  string  true  "Document ID"
+// @Param        document  body  dto.UpdateDocumentRequest  true  "Document data"
+// @Success      200  {object}  interface{}  "Document updated successfully"
+// @Failure      400  {object}  interface{}  "Invalid document ID or request payload"
+// @Failure      500  {object}  interface{}  "Failed to update document"
+// @Router       /api/v1/documents/{document_id} [patch]
 func (h *DocumentHandler) Update(
 	cxt *gin.Context,
 ) {
@@ -143,6 +187,17 @@ func (h *DocumentHandler) Update(
 
 }
 
+// Delete godoc
+// @Summary      Delete document
+// @Description  Deletes an existing document by its unique identifier.
+// @Tags         Documents
+// @Produce      json
+// @Security     BearerAuth
+// @Param        document_id  path  string  true  "Document ID"
+// @Success      200  {object}  interface{}  "Document deleted successfully"
+// @Failure      400  {object}  interface{}  "Invalid document ID"
+// @Failure      404  {object}  interface{}  "Document not found"
+// @Router       /api/v1/documents/{document_id} [delete]
 func (h *DocumentHandler) Delete(
 	cxt *gin.Context,
 ) {
@@ -169,6 +224,17 @@ func (h *DocumentHandler) Delete(
 	utils.Ok(cxt, "Document deleted successfully", nil)
 }
 
+// Delete godoc
+// @Summary      Delete document
+// @Description  Deletes an existing document by its unique identifier.
+// @Tags         Documents
+// @Produce      json
+// @Security     BearerAuth
+// @Param        document_id  path  string  true  "Document ID"
+// @Success      200  {object}  interface{}  "Document deleted successfully"
+// @Failure      400  {object}  interface{}  "Invalid document ID"
+// @Failure      404  {object}  interface{}  "Document not found"
+// @Router       /api/v1/documents/by-hash/{hash} [GET]
 func (h *DocumentHandler) GetByHash(
 	cxt *gin.Context,
 ) {
@@ -200,7 +266,6 @@ func (h *DocumentHandler) GetByHash(
 		Type:       document.Type,
 		Issuer:     document.Issuer,
 		Hash:       document.Hash,
-		Status:     document.Status,
 		CreatedAt:  document.CreatedAt,
 	}
 
@@ -210,6 +275,17 @@ func (h *DocumentHandler) GetByHash(
 	)
 }
 
+// Check godoc
+// @Summary      Verify document
+// @Description  Verifies the authenticity and validity of a document using its document ID.
+// @Tags         Documents
+// @Accept       json
+// @Produce      json
+// @Param        request  body  dto.VerificationRequest  true  "Document verification request"
+// @Success      200  {object}  dto.VerificationResponse  "Document verification result"
+// @Failure      400  {object}  interface{}  "Invalid request payload or document ID"
+// @Failure      404  {object}  interface{}  "Document not found"
+// @Router       /api/v1/documents/verify [post]
 func (h *DocumentHandler) Check(
 	cxt *gin.Context,
 ) {

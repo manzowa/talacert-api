@@ -9,12 +9,6 @@ import (
 func (h *APIHandler) registerSwaggerRoutes(
 	router *gin.RouterGroup,
 ) {
-	swagger := router.Group("")
-
-	// swagger.GET(
-	// 	"/doc/*any",
-	// 	ginSwagger.WrapHandler(swaggerFiles.Handler),
-	// )
-
-	swagger.StaticFS("/doc", gin.Dir("./swagger-ui", true))
+	router.StaticFS("/docs", gin.Dir("./docs", true))
+	router.StaticFS("/swagger-ui", gin.Dir("./swagger-ui", true))
 }

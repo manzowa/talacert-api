@@ -192,7 +192,6 @@ func (s *DocumentService) toDocumentResponse(
 		Type:       document.Type,
 		Issuer:     document.Issuer,
 		Hash:       document.Hash,
-		Status:     string(document.Status),
 		CreatedAt:  document.CreatedAt,
 	}
 }

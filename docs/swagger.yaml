@@ -1,4 +1,693 @@
+basePath: /
+definitions:
+  talacert-api_internal_dto.CreateDocumentRequest:
+    properties:
+      issuer:
+        type: string
+      owner_name:
+        type: string
+      type:
+        type: string
+    required:
+    - issuer
+    - owner_name
+    - type
+    type: object
+  talacert-api_internal_dto.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+      role:
+        type: string
+      username:
+        maxLength: 50
+        minLength: 3
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  talacert-api_internal_dto.DocumentResponse:
+    properties:
+      blockchain_tx:
+        type: string
+      created_at:
+        type: string
+      document_id:
+        type: string
+      hash:
+        type: string
+      issuer:
+        type: string
+      owner_name:
+        type: string
+      qr_code:
+        type: string
+      status:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  talacert-api_internal_dto.HealthResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  talacert-api_internal_dto.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  talacert-api_internal_dto.LoginResponse:
+    properties:
+      access_token:
+        type: string
+      expires_in:
+        type: integer
+      refresh_token:
+        type: string
+      token_type:
+        type: string
+    type: object
+  talacert-api_internal_dto.LogoutRequest:
+    properties:
+      refresh_token:
+        type: string
+    required:
+    - refresh_token
+    type: object
+  talacert-api_internal_dto.UpdateDocumentRequest:
+    properties:
+      blockchain_tx:
+        type: string
+      issuer:
+        type: string
+      owner_name:
+        type: string
+      qr_code:
+        type: string
+      status:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  talacert-api_internal_dto.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  talacert-api_internal_dto.UserChangePasswordRequest:
+    properties:
+      password:
+        minLength: 8
+        type: string
+    required:
+    - password
+    type: object
+  talacert-api_internal_dto.UserChangeRoleRequest:
+    properties:
+      role:
+        type: string
+    required:
+    - role
+    type: object
+  talacert-api_internal_dto.UserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      role:
+        type: string
+      username:
+        type: string
+    type: object
+  talacert-api_internal_dto.VerificationData:
+    properties:
+      issuer:
+        type: string
+      owner:
+        type: string
+      type:
+        type: string
+    type: object
+  talacert-api_internal_dto.VerificationRequest:
+    properties:
+      document_id:
+        type: string
+    required:
+    - document_id
+    type: object
+  talacert-api_internal_dto.VerificationResponse:
+    properties:
+      data:
+        $ref: '#/definitions/talacert-api_internal_dto.VerificationData'
+      status:
+        type: string
+    type: object
+host: 127.0.0.1:8080
 info:
   contact: {}
-paths: {}
+  description: |-
+    API de vérification de documents officiels.
+    TalaCert permet de créer, gérer et vérifier l'authenticité des certificats, diplômes et attestations.
+  title: TalaCert API
+  version: "1.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authentifie un utilisateur et retourne les tokens JWT.
+      parameters:
+      - description: Identifiants
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/talacert-api_internal_dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/talacert-api_internal_dto.LoginResponse'
+        "401":
+          description: Authentication failed
+          schema: {}
+      summary: Connexion
+      tags:
+      - Authentication
+  /api/v1/auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Invalide le refresh token de l'utilisateur et termine sa session.
+      parameters:
+      - description: Refresh token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/talacert-api_internal_dto.LogoutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Logout successful
+          schema: {}
+        "400":
+          description: Invalid request payload
+          schema: {}
+        "500":
+          description: Logout failed
+          schema: {}
+      summary: Logout
+      tags:
+      - Authentication
+  /api/v1/auth/me:
+    get:
+      description: Retourne les informations de l'utilisateur actuellement authentifié.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User retrieved successfully
+          schema:
+            $ref: '#/definitions/talacert-api_internal_dto.UserResponse'
+        "401":
+          description: User not found in context
+          schema: {}
+        "500":
+          description: Invalid user data in context
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Get current user
+      tags:
+      - Authentication
+  /api/v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Génère un nouvel access token à partir d'un refresh token valide.
+      parameters:
+      - description: Refresh token
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/talacert-api_internal_dto.LogoutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Token refreshed successfully
+          schema: {}
+        "400":
+          description: Invalid request payload
+          schema: {}
+        "401":
+          description: Token refresh failed
+          schema: {}
+      summary: Refresh access token
+      tags:
+      - Authentication
+  /api/v1/documents:
+    get:
+      description: Retrieves all documents.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Documents retrieved successfully
+          schema: {}
+        "500":
+          description: Failed to retrieve documents
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Get all documents
+      tags:
+      - Documents
+    post:
+      consumes:
+      - application/json
+      description: Creates a new official document.
+      parameters:
+      - description: Document data
+        in: body
+        name: document
+        required: true
+        schema:
+          $ref: '#/definitions/talacert-api_internal_dto.CreateDocumentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Document created successfully
+          schema: {}
+        "400":
+          description: Invalid request payload
+          schema: {}
+        "500":
+          description: Failed to create document
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Create document
+      tags:
+      - Documents
+  /api/v1/documents/{document_id}:
+    delete:
+      description: Deletes an existing document by its unique identifier.
+      parameters:
+      - description: Document ID
+        in: path
+        name: document_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Document deleted successfully
+          schema: {}
+        "400":
+          description: Invalid document ID
+          schema: {}
+        "404":
+          description: Document not found
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Delete document
+      tags:
+      - Documents
+    get:
+      description: Retrieves a document by its unique identifier.
+      parameters:
+      - description: Document ID
+        in: path
+        name: document_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Document retrieved successfully
+          schema:
+            $ref: '#/definitions/talacert-api_internal_dto.DocumentResponse'
+        "400":
+          description: Invalid document ID
+          schema: {}
+        "404":
+          description: Document not found
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Get document
+      tags:
+      - Documents
+    patch:
+      consumes:
+      - application/json
+      description: Updates an existing document. Only the provided fields need to
+        be supplied.
+      parameters:
+      - description: Document ID
+        in: path
+        name: document_id
+        required: true
+        type: string
+      - description: Document data
+        in: body
+        name: document
+        required: true
+        schema:
+          $ref: '#/definitions/talacert-api_internal_dto.UpdateDocumentRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Document updated successfully
+          schema: {}
+        "400":
+          description: Invalid document ID or request payload
+          schema: {}
+        "500":
+          description: Failed to update document
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Update document
+      tags:
+      - Documents
+  /api/v1/documents/by-hash/{hash}:
+    get:
+      description: Deletes an existing document by its unique identifier.
+      parameters:
+      - description: Document ID
+        in: path
+        name: document_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Document deleted successfully
+          schema: {}
+        "400":
+          description: Invalid document ID
+          schema: {}
+        "404":
+          description: Document not found
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Delete document
+      tags:
+      - Documents
+  /api/v1/documents/verify:
+    post:
+      consumes:
+      - application/json
+      description: Verifies the authenticity and validity of a document using its
+        document ID.
+      parameters:
+      - description: Document verification request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/talacert-api_internal_dto.VerificationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Document verification result
+          schema:
+            $ref: '#/definitions/talacert-api_internal_dto.VerificationResponse'
+        "400":
+          description: Invalid request payload or document ID
+          schema: {}
+        "404":
+          description: Document not found
+          schema: {}
+      summary: Verify document
+      tags:
+      - Documents
+  /api/v1/users:
+    get:
+      description: Retrieves all users.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Users retrieved successfully
+          schema: {}
+        "500":
+          description: Failed to retrieve users
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Get all users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user.
+      parameters:
+      - description: User data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/talacert-api_internal_dto.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema: {}
+        "400":
+          description: Invalid request payload
+          schema: {}
+        "409":
+          description: User already exists
+          schema: {}
+        "500":
+          description: Failed to create user
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Create user
+      tags:
+      - Users
+  /api/v1/users/{id}:
+    delete:
+      description: Deletes a user by their unique identifier.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema: {}
+        "400":
+          description: Invalid user ID
+          schema: {}
+        "404":
+          description: User not found
+          schema: {}
+        "500":
+          description: Failed to delete user
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Delete user
+      tags:
+      - Users
+    get:
+      description: Retrieves a user by their unique identifier.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User retrieved successfully
+          schema: {}
+        "400":
+          description: Invalid user ID
+          schema: {}
+        "404":
+          description: User not found
+          schema: {}
+        "500":
+          description: Failed to retrieve user
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Get user by ID
+      tags:
+      - Users
+    patch:
+      consumes:
+      - application/json
+      description: Updates an existing user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/talacert-api_internal_dto.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User updated successfully
+          schema: {}
+        "400":
+          description: Invalid user ID or request payload
+          schema: {}
+        "404":
+          description: User not found
+          schema: {}
+        "409":
+          description: User already exists
+          schema: {}
+        "500":
+          description: Failed to update user
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Update user
+      tags:
+      - Users
+  /api/v1/users/{id}/password:
+    patch:
+      consumes:
+      - application/json
+      description: Changes the password of an existing user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/talacert-api_internal_dto.UserChangePasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Password changed successfully
+          schema: {}
+        "400":
+          description: Invalid user ID or request payload
+          schema: {}
+        "500":
+          description: Failed to change password
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Change user password
+      tags:
+      - Users
+  /api/v1/users/{id}/role:
+    patch:
+      consumes:
+      - application/json
+      description: Changes the role of an existing user.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: New user role
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/talacert-api_internal_dto.UserChangeRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Role changed successfully
+          schema: {}
+        "400":
+          description: Invalid user ID or request payload
+          schema: {}
+        "500":
+          description: Failed to change role
+          schema: {}
+      security:
+      - BearerAuth: []
+      summary: Change user role
+      tags:
+      - Users
+  /health:
+    get:
+      description: Checks whether the Talacert API is healthy and available.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Health check successful
+          schema:
+            $ref: '#/definitions/talacert-api_internal_dto.HealthResponse'
+        "500":
+          description: Health check failed
+          schema: {}
+      summary: Health check
+      tags:
+      - Health
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

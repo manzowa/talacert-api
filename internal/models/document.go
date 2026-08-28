@@ -21,7 +21,7 @@ type Document struct {
 	Issuer       string                   `gorm:"type:varchar(191);not null" json:"issuer"`
 	Hash         string                   `gorm:"type:char(64);not null;uniqueIndex" json:"hash"`
 	BlockchainTx string                   `gorm:"type:text;not null" json:"blockchain_tx"`
-	QrCode       string                   `gorm:"type:text;not null" json:"qr_code"`
+	QRCode       string                   `gorm:"type:text;not null" json:"qr_code"`
 	Status       constants.DocumentStatus `gorm:"type:varchar(20);not null;default:'valid'" json:"status"`
 }
 

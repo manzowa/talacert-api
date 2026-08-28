@@ -33,6 +33,10 @@ func Ok(cxt *gin.Context, message string, data interface{}) {
 	Success(cxt, http.StatusOK, message, data)
 }
 
+func Data(cxt *gin.Context, contentType string, data []byte) {
+	cxt.Data(http.StatusOK, contentType, data)
+}
+
 // Error renvoie une réponse d'erreur.
 func Error(cxt *gin.Context, statusCode int, message string, err interface{}) {
 	cxt.JSON(statusCode, APIResponse{

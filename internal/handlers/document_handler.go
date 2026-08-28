@@ -58,6 +58,7 @@ func (h *DocumentHandler) Create(
 		)
 		return
 	}
+
 	utils.Created(
 		cxt, "Document created successfully",
 		nil,
@@ -286,7 +287,7 @@ func (h *DocumentHandler) GetByHash(
 // @Failure      400  {object}  interface{}  "Invalid request payload or document ID"
 // @Failure      404  {object}  interface{}  "Document not found"
 // @Router       /api/v1/documents/verify [post]
-func (h *DocumentHandler) Check(
+func (h *DocumentHandler) GetCheck(
 	cxt *gin.Context,
 ) {
 	var req dto.VerificationRequest
@@ -330,4 +331,40 @@ func (h *DocumentHandler) Check(
 
 	utils.Ok(cxt, message, response)
 
+}
+
+// QRCode godoc
+// @Summary      Generate QR code for document
+// @Description  Generates a QR code for a document using its unique identifier.
+// @Tags         Documents
+// @Produce      image/png
+// @Param        document_id  path  string  true  "Document ID"
+// @Success      200  {file}  image/png  "QR code generated successfully"
+// @Failure      400  {object}  interface{}  "Invalid document ID"
+// @Failure      500  {object}  interface{}  "Failed to generate QR code"
+// @Router       /api/v1/documents/qrcode/{document_id} [get]
+func (h *DocumentHandler) GetQRCode(
+	cxt *gin.Context,
+) {
+	documentID := cxt.Param("document_id")
+
+	if documentID == "" {
+		utils.BadRequest(
+			cxt, "Invalid document ID",
+			errors.New(http.StatusText(http.StatusBadRequest)),
+		)
+		return
+	}
+
+	imagePng, err := h.Service.QRCode.GeneratePng(documentID)
+
+	if err != nil {
+		utils.InternalServerError(
+			cxt, "Failed to generate QR code",
+			errors.New(http.StatusText(http.StatusInternalServerError)),
+		)
+		return
+	}
+
+	utils.Data(cxt, "image/png", imagePng)
 }

@@ -69,6 +69,16 @@ func (h *APIHandler) registerDocumentRoutes(
 		h.DocumentHandler.GetByHash,
 	)
 
+	documents.GET(
+		"/qrcode/:document_id",
+		auth.RequireRole(
+			constants.RoleUser.String(),
+			constants.RoleManager.String(),
+			constants.RoleAdmin.String(),
+		),
+		h.DocumentHandler.GetQRCode,
+	)
+
 	documents.POST(
 		"/verify",
 		auth.RequireRole(
@@ -76,6 +86,6 @@ func (h *APIHandler) registerDocumentRoutes(
 			constants.RoleManager.String(),
 			constants.RoleAdmin.String(),
 		),
-		h.DocumentHandler.Check,
+		h.DocumentHandler.GetCheck,
 	)
 }

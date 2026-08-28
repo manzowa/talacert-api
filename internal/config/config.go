@@ -6,7 +6,8 @@ type Config struct {
 	// Application Configuration
 	AppEnv  string
 	GinMode string
-	Port    string
+	AppPort string
+	AppURL  string
 
 	// Database Configuration
 	DBHost     string

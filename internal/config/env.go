@@ -32,7 +32,8 @@ func LoadEnv() (*Config, error) {
 	cfg := &Config{
 		AppEnv:     mustEnv("APP_ENV"),
 		GinMode:    mustEnv("GIN_MODE"),
-		Port:       mustEnv("PORT"),
+		AppPort:    mustEnv("APP_PORT"),
+		AppURL:     mustEnv("APP_URL"),
 		DBHost:     mustEnv("DB_HOST"),
 		DBPort:     mustEnv("DB_PORT"),
 		DBUser:     mustEnv("DB_USER"),

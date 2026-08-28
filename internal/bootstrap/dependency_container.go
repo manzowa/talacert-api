@@ -9,6 +9,7 @@ import (
 	"talacert-api/internal/repositories"
 	"talacert-api/internal/routes"
 	"talacert-api/internal/services"
+	"talacert-api/internal/utils"
 )
 
 type Dependencies struct {
@@ -35,7 +36,14 @@ func BuildDependencyContainer(
 	userRepository := repositories.NewUserRepository(db)
 
 	// Services
-	documentService := services.NewDocument(documentRepository, documentSequenceRepository)
+	qr_service := services.NewQRService(cfg.AppURL)
+
+	documentService := services.NewDocument(
+		documentRepository,
+		documentSequenceRepository,
+		&utils.HashGenerator{},
+		qr_service, // Replace with actual QRService initialization if needed
+	)
 	authService := services.NewAuthService(authRepository, jwtManager)
 	userService := services.NewUserService(userRepository)
 

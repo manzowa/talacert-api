@@ -27,11 +27,11 @@ func Run(
 	logger.AppLogger.Info(
 		"Starting HTTP server",
 		"port",
-		app.Config.Port,
+		app.Config.AppPort,
 	)
 
 	err := app.Router.Run(
-		":" + app.Config.Port,
+		":" + app.Config.AppPort,
 	)
 
 	if err != nil {

@@ -83,8 +83,8 @@ func (s *AuthService) Login(
 	if err != nil {
 		return nil, err
 	}
-	hash := utils.NewHash()
-	hashedRefreshToken := hash.GenerateHash(refreshToken)
+	hash := utils.NewHashGenerator()
+	hashedRefreshToken := hash.Generate(refreshToken)
 
 	err = s.AuthRepository.SaveRefreshToken(
 		cxt,
@@ -114,8 +114,8 @@ func (s *AuthService) RefreshToken(
 	token string,
 ) (*dto.LoginResponse, error) {
 
-	hash := utils.NewHash()
-	hashedToken := hash.GenerateHash(token)
+	hash := utils.NewHashGenerator()
+	hashedToken := hash.Generate(token)
 
 	stored, err := s.AuthRepository.GetRefreshToken(
 		cxt,
@@ -173,7 +173,7 @@ func (s *AuthService) RefreshToken(
 		cxt,
 		&models.RefreshToken{
 			UserID: claims.UserID,
-			Token:  hash.GenerateHash(newRefreshToken),
+			Token:  hash.Generate(newRefreshToken),
 			ExpiresAt: time.Now().Add(
 				s.JWTManager.RefreshDuration(),
 			),
@@ -226,8 +226,8 @@ func (s *AuthService) Logout(
 	}
 
 	// 2. Hasher le token
-	hash := utils.NewHash()
-	hashedToken := hash.GenerateHash(refreshToken)
+	hash := utils.NewHashGenerator()
+	hashedToken := hash.Generate(refreshToken)
 
 	// 3. Révoquer le token en DB
 	return s.AuthRepository.RevokeRefreshToken(

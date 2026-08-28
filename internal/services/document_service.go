@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 	"time"
 
 	"talacert-api/internal/constants"
 	"talacert-api/internal/dto"
+	"talacert-api/internal/logger"
 	"talacert-api/internal/models"
 	"talacert-api/internal/repositories"
 	"talacert-api/internal/utils"
@@ -20,17 +22,21 @@ var (
 type DocumentService struct {
 	DocumentRepository         repositories.DocumentRepositoryInterface
 	DocumentSequenceRepository repositories.DocumentSequenceRepositoryInterface
-	Hash                       *utils.Hash
+	Hash                       *utils.HashGenerator
+	QRCode                     *QRService
 }
 
 func NewDocument(
 	repository repositories.DocumentRepositoryInterface,
 	sequenceRepository repositories.DocumentSequenceRepositoryInterface,
+	hash *utils.HashGenerator,
+	qrCode *QRService,
 ) *DocumentService {
 	return &DocumentService{
 		DocumentRepository:         repository,
 		DocumentSequenceRepository: sequenceRepository,
-		Hash:                       &utils.Hash{},
+		Hash:                       hash,
+		QRCode:                     qrCode,
 	}
 }
 func (s *DocumentService) GetAll(
@@ -54,20 +60,26 @@ func (s *DocumentService) Create(
 	ctx context.Context,
 	req *dto.CreateDocumentRequest,
 ) error {
+
 	year := time.Now().Year()
 
 	// 1. sequence
-	lastSeq, err := s.DocumentSequenceRepository.GetLast(string(req.Type), year)
+	lastSeq, err := s.DocumentSequenceRepository.GetLast(ctx, string(req.Type), year)
 	if err != nil {
 		return err
 	}
+
+	// 2. Générer la nouvelle séquence
 	seq := lastSeq + 1
-	var documentID = utils.GenerateDocumentID(
+
+	// 3. Générer le Document ID
+	var documentID = s.Hash.GenerateDocumentID(
 		string(req.Type),
 		year,
 		seq,
 	)
 
+	// 4. Génére le hash
 	content := fmt.Sprintf(
 		"%s|%s|%s|%s",
 		documentID,
@@ -75,10 +87,18 @@ func (s *DocumentService) Create(
 		req.Type,
 		req.Issuer,
 	)
-	var documentHash = s.Hash.GenerateHash(content)
 
-	// 4. save sequence
-	if err := s.DocumentSequenceRepository.Save(string(req.Type), year, seq); err != nil {
+	documentHash := s.Hash.Generate(content)
+
+	// 5. Générer l'URL de vérification / QR Code
+	if s.QRCode == nil {
+		logger.AccessLogger.Error("QRService is nil")
+		return nil
+	}
+	qrCode := s.QRCode.GeneratePath(documentID)
+
+	// 6. save sequence
+	if err := s.DocumentSequenceRepository.Save(ctx, string(req.Type), year, seq); err != nil {
 		return err
 	}
 
@@ -88,9 +108,14 @@ func (s *DocumentService) Create(
 		Type:       req.Type,
 		Issuer:     req.Issuer,
 		Hash:       documentHash,
+		QRCode:     qrCode,
+		Status:     constants.DocumentStatus(constants.DocumentValid),
 	}
 
+	log.Printf("✅ document = %+v", document)
+
 	return s.DocumentRepository.Create(ctx, document)
+
 }
 
 func (s *DocumentService) Update(

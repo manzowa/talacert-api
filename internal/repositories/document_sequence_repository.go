@@ -1,14 +1,16 @@
 package repositories
 
 import (
+	"context"
 	"talacert-api/internal/models"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type DocumentSequenceRepositoryInterface interface {
-	GetLast(documentType string, year int) (int, error)
-	Save(documentType string, year int, seq int) error
+	GetLast(ctx context.Context, documentType string, year int) (int, error)
+	Save(ctx context.Context, documentType string, year int, seq int) error
 }
 
 type DocumentSequenceRepository struct {
@@ -20,9 +22,12 @@ func NewDocumentSequenceRepository(db *gorm.DB) *DocumentSequenceRepository {
 	return &DocumentSequenceRepository{DB: db}
 }
 
-func (r *DocumentSequenceRepository) GetLast(documentType string, year int) (int, error) {
+func (r *DocumentSequenceRepository) GetLast(ctx context.Context, documentType string, year int) (int, error) {
 	var seq int
-	err := r.DB.
+	err := r.DB.WithContext(ctx).
+		Clauses(clause.Locking{
+			Strength: "UPDATE",
+		}).
 		Model(&models.DocumentSequence{}).
 		Where("type = ? AND year = ?", documentType, year).
 		Select("COALESCE(MAX(last_seq), 0)").
@@ -31,8 +36,8 @@ func (r *DocumentSequenceRepository) GetLast(documentType string, year int) (int
 	return seq, err
 }
 
-func (r *DocumentSequenceRepository) Save(documentType string, year int, seq int) error {
-	return r.DB.
+func (r *DocumentSequenceRepository) Save(ctx context.Context, documentType string, year int, seq int) error {
+	return r.DB.WithContext(ctx).
 		Model(&models.DocumentSequence{}).
 		Where("type = ? AND year = ?", documentType, year).
 		Assign(models.DocumentSequence{

@@ -34,9 +34,17 @@ func (r *DocumentRepository) Create(
 	document *models.Document,
 ) error {
 
-	if err := r.DB.WithContext(cxt).Create(document).Error; err != nil {
-		logger.AccessLogger.Error("failed to create document", "error", err)
-		return err
+	result := r.DB.Debug().
+		WithContext(cxt).
+		Create(document)
+
+	if result.Error != nil {
+		logger.AccessLogger.Error(
+			"failed to create document",
+			"error",
+			result.Error,
+		)
+		return result.Error
 	}
 
 	return nil
